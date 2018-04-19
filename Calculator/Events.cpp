@@ -83,7 +83,7 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 
 
 	// -------- ComboBox handles --------
-
+	//Test
 
 	// -------- Label handles --------
 	CONTROL_STATIC_NUMBER_FIELD = CreateWindowW(L"Static", L"0",
