@@ -79,7 +79,7 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 	//	WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
 	//	10, 10, 50, 50,					// x, y, w, h
 	//	Wea->hWnd, (HMENU)ID_STATIC_NUMBER_ONE,
-	//	(HINSTANCE)GetWindowLong(Wea->hWnd, GWL_HINSTANCE), NULL);
+	//	(HINSTANCE)GetWindowLong(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 
 	// -------- ComboBox handles --------
@@ -90,61 +90,61 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | SS_RIGHT | SS_CENTERIMAGE,
 		buttonLocationColumnOne, buttonLocationRowOne - buttonSpace - buttonHeight, 190, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_STATIC_NUMBER_FIELD,
-		(HINSTANCE)GetWindowLong(Wea->hWnd, GWL_HINSTANCE), NULL);
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 	
 	CONTROL_STATIC_NUMBER_ONE = CreateWindowW(L"Button", L"1",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
 		buttonLocationColumnOne, buttonLocationRowOne, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_STATIC_NUMBER_ONE,
-		(HINSTANCE)GetWindowLong(Wea->hWnd, GWL_HINSTANCE), NULL);
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_STATIC_NUMBER_TWO = CreateWindowW(L"Button", L"2",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
 		buttonLocationColumnTwo, buttonLocationRowOne, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_STATIC_NUMBER_TWO,
-		(HINSTANCE)GetWindowLong(Wea->hWnd, GWL_HINSTANCE), NULL);
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_STATIC_NUMBER_THREE = CreateWindowW(L"Button", L"3",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
 		buttonLocationColumnThree, buttonLocationRowOne, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_STATIC_NUMBER_THREE,
-		(HINSTANCE)GetWindowLong(Wea->hWnd, GWL_HINSTANCE), NULL);
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_STATIC_NUMBER_FOUR = CreateWindowW(L"Button", L"4",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
 		buttonLocationColumnOne, buttonLocationRowTwo, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_STATIC_NUMBER_FOUR,
-		(HINSTANCE)GetWindowLong(Wea->hWnd, GWL_HINSTANCE), NULL);
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_STATIC_NUMBER_FIVE = CreateWindowW(L"Button", L"5",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
 		buttonLocationColumnTwo, buttonLocationRowTwo, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_STATIC_NUMBER_FIVE,
-		(HINSTANCE)GetWindowLong(Wea->hWnd, GWL_HINSTANCE), NULL);
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_STATIC_NUMBER_SIX = CreateWindowW(L"Button", L"6",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
 		buttonLocationColumnThree, buttonLocationRowTwo, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_STATIC_NUMBER_SIX,
-		(HINSTANCE)GetWindowLong(Wea->hWnd, GWL_HINSTANCE), NULL);
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_STATIC_NUMBER_SEVEN = CreateWindowW(L"Button", L"7",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
 		buttonLocationColumnOne, buttonLocationRowThree, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_STATIC_NUMBER_SEVEN,
-		(HINSTANCE)GetWindowLong(Wea->hWnd, GWL_HINSTANCE), NULL);
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_STATIC_NUMBER_EIGHT = CreateWindowW(L"Button", L"8",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
 		buttonLocationColumnTwo, buttonLocationRowThree, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_STATIC_NUMBER_EIGHT,
-		(HINSTANCE)GetWindowLong(Wea->hWnd, GWL_HINSTANCE), NULL);
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_STATIC_NUMBER_NINE = CreateWindowW(L"Button", L"9",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
 		buttonLocationColumnThree, buttonLocationRowThree, buttonWidth, buttonHeight,				// x, y, w, h
 		Wea->hWnd, (HMENU)ID_STATIC_NUMBER_NINE,
-		(HINSTANCE)GetWindowLong(Wea->hWnd, GWL_HINSTANCE), NULL);
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 
 
@@ -158,7 +158,7 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
 		buttonLocationColumnTwo, buttonLocationRowFour, buttonWidth, buttonHeight,				// x, y, w, h
 		Wea->hWnd, (HMENU)ID_STATIC_NUMBER_ZERO,
-		(HINSTANCE)GetWindowLong(Wea->hWnd, GWL_HINSTANCE), NULL);
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 
 	// -------- CheckBox handles --------
@@ -168,19 +168,19 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 
 
 	// Get the default window-procedure
-	ApplicationWindowProc = (WNDPROC)GetWindowLong(CONTROL_STATIC_NUMBER_ONE, GWL_WNDPROC);
+	ApplicationWindowProc = (WNDPROC)GetWindowLongPtr(CONTROL_STATIC_NUMBER_ONE, GWLP_WNDPROC);
 
 	// Set the a sub window-procedure for the following controls
-	SetWindowLong(CONTROL_STATIC_NUMBER_ONE, GWL_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
-	SetWindowLong(CONTROL_STATIC_NUMBER_TWO, GWL_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
-	SetWindowLong(CONTROL_STATIC_NUMBER_THREE, GWL_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
-	SetWindowLong(CONTROL_STATIC_NUMBER_FOUR, GWL_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
-	SetWindowLong(CONTROL_STATIC_NUMBER_FIVE, GWL_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
-	SetWindowLong(CONTROL_STATIC_NUMBER_SIX, GWL_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
-	SetWindowLong(CONTROL_STATIC_NUMBER_SEVEN, GWL_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
-	SetWindowLong(CONTROL_STATIC_NUMBER_EIGHT, GWL_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
-	SetWindowLong(CONTROL_STATIC_NUMBER_NINE, GWL_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
-	SetWindowLong(CONTROL_STATIC_NUMBER_ZERO, GWL_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_STATIC_NUMBER_ONE, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_STATIC_NUMBER_TWO, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_STATIC_NUMBER_THREE, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_STATIC_NUMBER_FOUR, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_STATIC_NUMBER_FIVE, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_STATIC_NUMBER_SIX, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_STATIC_NUMBER_SEVEN, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_STATIC_NUMBER_EIGHT, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_STATIC_NUMBER_NINE, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_STATIC_NUMBER_ZERO, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 
 	// Asign the application handle to the variable 
 	SendMessage(Wea->hWnd, WM_GETWINDOWHANDLE, 0, 0);
@@ -376,7 +376,7 @@ LRESULT CALLBACK Events::GlobalKeyboardHook(int nCode, WPARAM wParam, LPARAM lPa
 					if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD).length() > 1)
 					{
 						std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD);
-						int stringLength = currentNumber.length();
+						size_t stringLength = currentNumber.length();
 
 						currentNumber = currentNumber.substr(0, stringLength - 1);
 
