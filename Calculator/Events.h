@@ -85,7 +85,8 @@ public:
 	static LRESULT					MainWindowProc_OnClose(lpWndEventArgs Wea);
 	static LRESULT					MainWindowProc_GetWindowHandle(lpWndEventArgs Wea);
 	static LRESULT					MainWindowProc_OnDawControl(lpWndEventArgs Wea);
-	static LRESULT					MainWindowProc_OnStaticBackgroundColor(lpWndEventArgs Wea);
+	static LRESULT					MainWindowProc_OnMouseMove(lpWndEventArgs Wea);
+	static LRESULT					MainWindowProc_OnKeyDown(lpWndEventArgs Wea);
 
 	// -------- Normal functions and global hooks --------
 	static LRESULT CALLBACK			GlobalKeyboardHook(int nCode, WPARAM wParam, LPARAM lParam);

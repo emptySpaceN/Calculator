@@ -91,7 +91,7 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 		buttonLocationColumnOne, buttonLocationRowOne - buttonSpace - buttonHeight, 190, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_STATIC_NUMBER_FIELD,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
-	
+
 	CONTROL_STATIC_NUMBER_ONE = CreateWindowW(L"Button", L"1",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
 		buttonLocationColumnOne, buttonLocationRowOne, buttonWidth, buttonHeight,					// x, y, w, h
@@ -191,9 +191,6 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 
 LRESULT Events::MainWindowProc_OnPaint(lpWndEventArgs Wea)
 {
-
-
-
 	// Font-test
 	HFONT hFont, hTmp;
 	PAINTSTRUCT ps;
@@ -210,7 +207,7 @@ LRESULT Events::MainWindowProc_OnPaint(lpWndEventArgs Wea)
 	hFont = CreateFontW(80, 0, 0, 0, FW_BOLD, 0, 0, 0, 0, 0, 0, 2, 0, L"SYSTEM_FIXED_FONT");
 	hTmp = (HFONT)SelectObject(hDC, hFont);
 	SetBkMode(hDC, TRANSPARENT);
-	DrawText(hDC, L"Hello, World!", -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	//DrawText(hDC, L"Hello, World!", -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 	DeleteObject(SelectObject(hDC, hTmp));
 
 	EndPaint(Wea->hWnd, &ps);
@@ -244,291 +241,94 @@ LRESULT Events::MainWindowProc_OnDawControl(lpWndEventArgs Wea)
 
 	LPDRAWITEMSTRUCT currentControlStruct = (LPDRAWITEMSTRUCT)Wea->lParam;
 
-	cout << "CURRENT CONTROL ID: " << currentControlStruct->CtlID << endl;
-	//if (HANDLE_CURRENTSELECTED == currentControlStruct->hwndItem)
-	//{
-		switch (currentControlStruct->CtlID)
+	//cout << "CURRENT CONTROL ID: " << currentControlStruct->CtlID << endl;
+
+	switch (currentControlStruct->CtlID)
+	{
+		case ID_STATIC_NUMBER_ONE:
 		{
-			case ID_STATIC_NUMBER_ONE:
-			{
-				HandleItemDrawing(currentControlStruct, L"1");
-			}
-			break;
-			case ID_STATIC_NUMBER_TWO:
-			{
-				HandleItemDrawing(currentControlStruct, L"2");
-			}
-			break;
-			case ID_STATIC_NUMBER_THREE:
-			{
-				HandleItemDrawing(currentControlStruct, L"3");
-			}
-			break;
-			case ID_STATIC_NUMBER_FOUR:
-			{
-				HandleItemDrawing(currentControlStruct, L"4");
-			}
-			break;
-			case ID_STATIC_NUMBER_FIVE:
-			{
-				HandleItemDrawing(currentControlStruct, L"5");
-			}
-			break;
-			case ID_STATIC_NUMBER_SIX:
-			{
-				HandleItemDrawing(currentControlStruct, L"6");
-			}
-			break;
-			case ID_STATIC_NUMBER_SEVEN:
-			{
-				HandleItemDrawing(currentControlStruct, L"7");
-			}
-			break;
-			case ID_STATIC_NUMBER_EIGHT:
-			{
-				HandleItemDrawing(currentControlStruct, L"8");
-			}
-			break;
-			case ID_STATIC_NUMBER_NINE:
-			{
-				HandleItemDrawing(currentControlStruct, L"9");
-			}
-			break;
-			case ID_STATIC_NUMBER_ZERO:
-			{
-				HandleItemDrawing(currentControlStruct, L"0");
-			}
-			break;
-			default:
-			{
-			}
-			break;
+			HandleItemDrawing(currentControlStruct, L"1");
 		}
-	//}
-
-
-
-
-	
-
-
-	return (INT_PTR)TRUE;
-}
-
-
-LRESULT Events::MainWindowProc_OnStaticBackgroundColor(lpWndEventArgs Wea)
-{
-	//if (buttonPressed && withinControl)
-	//{
-	//	switch (GetDlgCtrlID((HWND)Wea->lParam))
-	//	{
-	//		case ID_STATIC_NUMBER_FIELD:
-	//		{
-	//		}
-	//		break;
-	//		case ID_STATIC_NUMBER_ONE:
-	//		case ID_STATIC_NUMBER_TWO:
-	//		case ID_STATIC_NUMBER_THREE:
-	//		case ID_STATIC_NUMBER_FOUR:
-	//		case ID_STATIC_NUMBER_FIVE:
-	//		case ID_STATIC_NUMBER_SIX:
-	//		case ID_STATIC_NUMBER_SEVEN:
-	//		case ID_STATIC_NUMBER_EIGHT:
-	//		case ID_STATIC_NUMBER_NINE:
-	//		{
-	//			return (INT_PTR)PaintButtonBackground(Wea->lParam, Wea->wParam);
-	//		}
-	//		break;
-	//		default:
-	//		{
-
-	//		}
-	//		break;
-	//	}
-	//}
+		break;
+		case ID_STATIC_NUMBER_TWO:
+		{
+			HandleItemDrawing(currentControlStruct, L"2");
+		}
+		break;
+		case ID_STATIC_NUMBER_THREE:
+		{
+			HandleItemDrawing(currentControlStruct, L"3");
+		}
+		break;
+		case ID_STATIC_NUMBER_FOUR:
+		{
+			HandleItemDrawing(currentControlStruct, L"4");
+		}
+		break;
+		case ID_STATIC_NUMBER_FIVE:
+		{
+			HandleItemDrawing(currentControlStruct, L"5");
+		}
+		break;
+		case ID_STATIC_NUMBER_SIX:
+		{
+			HandleItemDrawing(currentControlStruct, L"6");
+		}
+		break;
+		case ID_STATIC_NUMBER_SEVEN:
+		{
+			HandleItemDrawing(currentControlStruct, L"7");
+		}
+		break;
+		case ID_STATIC_NUMBER_EIGHT:
+		{
+			HandleItemDrawing(currentControlStruct, L"8");
+		}
+		break;
+		case ID_STATIC_NUMBER_NINE:
+		{
+			HandleItemDrawing(currentControlStruct, L"9");
+		}
+		break;
+		case ID_STATIC_NUMBER_ZERO:
+		{
+			HandleItemDrawing(currentControlStruct, L"0");
+		}
+		break;
+		default:
+		{
+		}
+		break;
+	}
 
 	return 0;
 }
 
 
-LRESULT CALLBACK Events::GlobalKeyboardHook(int nCode, WPARAM wParam, LPARAM lParam)
+LRESULT Events::MainWindowProc_OnMouseMove(lpWndEventArgs Wea)
 {
-	if (GetForegroundWindow() == HANDLE_MAINWINDOW)
+	using namespace std;
+
+	if (buttonPressed)
 	{
-		if (wParam == WM_KEYDOWN)
+		POINT point;
+
+		GetCursorPos(&point);
+
+		HWND HANDLE_BUFFER = WindowFromPoint(point);
+
+		switch (GetDlgCtrlID((HWND)HANDLE_BUFFER))
 		{
-			using namespace std;
-			PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT)lParam;
-			//cout << wParam << " - " << lParam << " - " << nCode << p->vkCode << endl;
-
-			switch (p->vkCode)
+			default:
 			{
-				case VK_DELETE:
+				//wcout << "Out of control" << endl;
+				if (withinControl)
 				{
-					if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
-					{
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
-					}
+					withinControl = false;
+					RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 				}
-				break;
-				case VK_BACK:
-				{
-					if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD).length() > 1)
-					{
-						std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD);
-						size_t stringLength = currentNumber.length();
-
-						currentNumber = currentNumber.substr(0, stringLength - 1);
-
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-					}
-					else
-					{
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
-					}
-				}
-				break;
-				case VK_KEY_0:
-				case VK_NUMPAD0:
-				{
-					if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
-					{
-						std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"0";
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-					}
-				}
-				break;
-				case VK_KEY_1:
-				case VK_NUMPAD1:
-				{
-					if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
-					{
-						std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"1";
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-					}
-					else
-					{
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"1");
-					}
-				}
-				break;
-				case VK_KEY_2:
-				case VK_NUMPAD2:
-				{
-					if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
-					{
-						std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"2";
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-					}
-					else
-					{
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"2");
-					}
-				}
-				break;
-				case VK_KEY_3:
-				case VK_NUMPAD3:
-				{
-					if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
-					{
-						std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"3";
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-					}
-					else
-					{
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"3");
-					}
-				}
-				break;
-				case VK_KEY_4:
-				case VK_NUMPAD4:
-				{
-					if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
-					{
-						std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"4";
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-					}
-					else
-					{
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"4");
-					}
-				}
-				break;
-				case VK_KEY_5:
-				case VK_NUMPAD5:
-				{
-					if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
-					{
-						std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"5";
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-					}
-					else
-					{
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"5");
-					}
-				}
-				break;
-				case VK_KEY_6:
-				case VK_NUMPAD6:
-				{
-					if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
-					{
-						std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"6";
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-					}
-					else
-					{
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"6");
-					}
-				}
-				break;
-				case VK_KEY_7:
-				case VK_NUMPAD7:
-				{
-					if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
-					{
-						std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"7";
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-					}
-					else
-					{
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"7");
-					}
-				}
-				break;
-				case VK_KEY_8:
-				case VK_NUMPAD8:
-				{
-					if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
-					{
-						std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"8";
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-					}
-					else
-					{
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"8");
-					}
-				}
-				break;
-				case VK_KEY_9:
-				case VK_NUMPAD9:
-				{
-					if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
-					{
-						std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"9";
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-					}
-					else
-					{
-						SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"9");
-					}
-				}
-				break;
-				default:
-				{
-				}
-				break;
 			}
+			break;
 		}
 	}
 
@@ -536,114 +336,171 @@ LRESULT CALLBACK Events::GlobalKeyboardHook(int nCode, WPARAM wParam, LPARAM lPa
 }
 
 
-LRESULT CALLBACK Events::GlobalMouseHook(int nCode, WPARAM wParam, LPARAM lParam)
+
+LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 {
 	using namespace std;
 
-	switch (wParam)
+	switch (Wea->wParam)
 	{
-		case WM_LBUTTONDOWN:
+		case VK_DELETE:
 		{
-			POINT point;
-
-			GetCursorPos(&point);
-
-			HANDLE_CURRENTCONTROL = WindowFromPoint(point);
-
-			switch (GetDlgCtrlID((HWND)HANDLE_CURRENTCONTROL))
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				case ID_STATIC_NUMBER_FIELD:
-				{
-				}
-				break;
-				case ID_STATIC_NUMBER_ONE:
-				case ID_STATIC_NUMBER_TWO:
-				case ID_STATIC_NUMBER_THREE:
-				case ID_STATIC_NUMBER_FOUR:
-				case ID_STATIC_NUMBER_FIVE:
-				case ID_STATIC_NUMBER_SIX:
-				case ID_STATIC_NUMBER_SEVEN:
-				case ID_STATIC_NUMBER_EIGHT:
-				case ID_STATIC_NUMBER_NINE:
-				case ID_STATIC_NUMBER_ZERO:
-				{
-					buttonPressed = true;
-					withinControl = true;
-
-					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD);
-					std::wstring buttonNumber = currentNumber + GetWindowTextToWstring(HANDLE_CURRENTCONTROL);
-
-					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)buttonNumber.c_str());
-
-					//RedrawWindow(HANDLE_CURRENTSELECTED, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-				}
-				break;
-				default:
-				{
-
-				}
-				break;
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
 			}
 		}
 		break;
-		case WM_LBUTTONUP:
+		case VK_BACK:
 		{
-			if (buttonPressed)
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD).length() > 1)
 			{
-				buttonPressed = false;
-				withinControl = false;
-				//RedrawWindow(HANDLE_CURRENTSELECTED, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-				//wcout << "Mouse button up - this is the current control text: " << GetWindowTextToWstring(HANDLE_CURRENTSELECTED) << endl;
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD);
+				size_t stringLength = currentNumber.length();
+
+				currentNumber = currentNumber.substr(0, stringLength - 1);
+
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
 			}
 		}
 		break;
-		case WM_MOUSEMOVE:
+		case VK_KEY_0:
+		case VK_NUMPAD0:
 		{
-			if (buttonPressed)
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				POINT point;
-
-				GetCursorPos(&point);
-
-				HWND HANDLE_BUFFER = WindowFromPoint(point);
-
-				switch (GetDlgCtrlID((HWND)HANDLE_BUFFER))
-				{
-					case ID_STATIC_NUMBER_FIELD:
-					{
-					}
-					break;
-					case ID_STATIC_NUMBER_ONE:
-					case ID_STATIC_NUMBER_TWO:
-					case ID_STATIC_NUMBER_THREE:
-					case ID_STATIC_NUMBER_FOUR:
-					case ID_STATIC_NUMBER_FIVE:
-					case ID_STATIC_NUMBER_SIX:
-					case ID_STATIC_NUMBER_SEVEN:
-					case ID_STATIC_NUMBER_EIGHT:
-					case ID_STATIC_NUMBER_NINE:
-					case ID_STATIC_NUMBER_ZERO:
-					{
-						if (HANDLE_CURRENTCONTROL == HANDLE_BUFFER)
-						{
-							if (!withinControl)
-							{
-								withinControl = true;
-								//RedrawWindow(HANDLE_CURRENTSELECTED, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-							}
-						}
-					}
-					break;
-					default:
-					{
-						if (withinControl)
-						{
-							withinControl = false;
-							//RedrawWindow(HANDLE_CURRENTSELECTED, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-						}
-					}
-					break;
-				}
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"0";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+		}
+		break;
+		case VK_KEY_1:
+		case VK_NUMPAD1:
+		{
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"1";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"1");
+			}
+		}
+		break;
+		case VK_KEY_2:
+		case VK_NUMPAD2:
+		{
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"2";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"2");
+			}
+		}
+		break;
+		case VK_KEY_3:
+		case VK_NUMPAD3:
+		{
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"3";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"3");
+			}
+		}
+		break;
+		case VK_KEY_4:
+		case VK_NUMPAD4:
+		{
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"4";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"4");
+			}
+		}
+		break;
+		case VK_KEY_5:
+		case VK_NUMPAD5:
+		{
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"5";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"5");
+			}
+		}
+		break;
+		case VK_KEY_6:
+		case VK_NUMPAD6:
+		{
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"6";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"6");
+			}
+		}
+		break;
+		case VK_KEY_7:
+		case VK_NUMPAD7:
+		{
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"7";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"7");
+			}
+		}
+		break;
+		case VK_KEY_8:
+		case VK_NUMPAD8:
+		{
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"8";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"8");
+			}
+		}
+		break;
+		case VK_KEY_9:
+		case VK_NUMPAD9:
+		{
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"9";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"9");
 			}
 		}
 		break;
@@ -653,6 +510,197 @@ LRESULT CALLBACK Events::GlobalMouseHook(int nCode, WPARAM wParam, LPARAM lParam
 		break;
 	}
 
+	return 0;
+}
+
+
+LRESULT CALLBACK Events::GlobalKeyboardHook(int nCode, WPARAM wParam, LPARAM lParam)
+{
+	//if (GetForegroundWindow() == HANDLE_MAINWINDOW)
+	//{
+	//	if (wParam == WM_KEYDOWN)
+	//	{
+	//		using namespace std;
+	//		PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT)lParam;
+	//		//cout << wParam << " - " << lParam << " - " << nCode << p->vkCode << endl;
+
+	//		switch (p->vkCode)
+	//		{
+	//			case VK_DELETE:
+	//			{
+	//				if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+	//				{
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
+	//				}
+	//			}
+	//			break;
+	//			case VK_BACK:
+	//			{
+	//				if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD).length() > 1)
+	//				{
+	//					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD);
+	//					size_t stringLength = currentNumber.length();
+
+	//					currentNumber = currentNumber.substr(0, stringLength - 1);
+
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+	//				}
+	//				else
+	//				{
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
+	//				}
+	//			}
+	//			break;
+	//			case VK_KEY_0:
+	//			case VK_NUMPAD0:
+	//			{
+	//				if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+	//				{
+	//					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"0";
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+	//				}
+	//			}
+	//			break;
+	//			case VK_KEY_1:
+	//			case VK_NUMPAD1:
+	//			{
+	//				if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+	//				{
+	//					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"1";
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+	//				}
+	//				else
+	//				{
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"1");
+	//				}
+	//			}
+	//			break;
+	//			case VK_KEY_2:
+	//			case VK_NUMPAD2:
+	//			{
+	//				if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+	//				{
+	//					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"2";
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+	//				}
+	//				else
+	//				{
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"2");
+	//				}
+	//			}
+	//			break;
+	//			case VK_KEY_3:
+	//			case VK_NUMPAD3:
+	//			{
+	//				if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+	//				{
+	//					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"3";
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+	//				}
+	//				else
+	//				{
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"3");
+	//				}
+	//			}
+	//			break;
+	//			case VK_KEY_4:
+	//			case VK_NUMPAD4:
+	//			{
+	//				if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+	//				{
+	//					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"4";
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+	//				}
+	//				else
+	//				{
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"4");
+	//				}
+	//			}
+	//			break;
+	//			case VK_KEY_5:
+	//			case VK_NUMPAD5:
+	//			{
+	//				if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+	//				{
+	//					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"5";
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+	//				}
+	//				else
+	//				{
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"5");
+	//				}
+	//			}
+	//			break;
+	//			case VK_KEY_6:
+	//			case VK_NUMPAD6:
+	//			{
+	//				if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+	//				{
+	//					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"6";
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+	//				}
+	//				else
+	//				{
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"6");
+	//				}
+	//			}
+	//			break;
+	//			case VK_KEY_7:
+	//			case VK_NUMPAD7:
+	//			{
+	//				if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+	//				{
+	//					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"7";
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+	//				}
+	//				else
+	//				{
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"7");
+	//				}
+	//			}
+	//			break;
+	//			case VK_KEY_8:
+	//			case VK_NUMPAD8:
+	//			{
+	//				if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+	//				{
+	//					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"8";
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+	//				}
+	//				else
+	//				{
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"8");
+	//				}
+	//			}
+	//			break;
+	//			case VK_KEY_9:
+	//			case VK_NUMPAD9:
+	//			{
+	//				if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+	//				{
+	//					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"9";
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+	//				}
+	//				else
+	//				{
+	//					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"9");
+	//				}
+	//			}
+	//			break;
+	//			default:
+	//			{
+	//			}
+	//			break;
+	//		}
+	//	}
+	//}
+
+	return 0;
+}
+
+
+LRESULT CALLBACK Events::GlobalMouseHook(int nCode, WPARAM wParam, LPARAM lParam)
+{
 	return 0;
 }
 
@@ -687,10 +735,6 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 {
 	using namespace std;
 
-
-
-
-
 	HFONT hFont, hTmp;
 	HBRUSH hBrush;
 	RECT rc;
@@ -710,7 +754,7 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 
 	if (buttonPressed && withinControl && (HANDLE_CURRENTCONTROL == HANDLE_BUFFER))
 	{
-		hBrush = CreateSolidBrush(RGB(221, 221, 221));
+		hBrush = CreateSolidBrush(RGB(5, 221, 221));
 		//cout << "Button pressed!" << endl;
 	}
 	else
@@ -758,49 +802,122 @@ std::wstring Events::GetClassNameToWstring(HWND _passedHandle)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 LRESULT CALLBACK Events::CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	using namespace std;
 
 	switch (msg)
 	{
-		case WM_MOUSEMOVE:
-		{
-			cout << "WM_MOUSEMOVE" << endl;
-			return (INT_PTR)TRUE;
-		}
-		break;
 		case WM_LBUTTONDOWN:
+		case WM_LBUTTONDBLCLK:
 		{
-			HANDLE_CURRENTCONTROL = hwnd;
-			wcout << "WM_LBUTTONDOWN: " << GetWindowTextToWstring(hwnd) << endl;
-			//RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+			POINT point;
+
+			GetCursorPos(&point);
+
+			HANDLE_CURRENTCONTROL = WindowFromPoint(point);
+
+			switch (GetDlgCtrlID((HWND)HANDLE_CURRENTCONTROL))
+			{
+				case ID_STATIC_NUMBER_FIELD:
+				{
+				}
+				break;
+				case ID_STATIC_NUMBER_ONE:
+				case ID_STATIC_NUMBER_TWO:
+				case ID_STATIC_NUMBER_THREE:
+				case ID_STATIC_NUMBER_FOUR:
+				case ID_STATIC_NUMBER_FIVE:
+				case ID_STATIC_NUMBER_SIX:
+				case ID_STATIC_NUMBER_SEVEN:
+				case ID_STATIC_NUMBER_EIGHT:
+				case ID_STATIC_NUMBER_NINE:
+				case ID_STATIC_NUMBER_ZERO:
+				{
+					HANDLE_CURRENTCONTROL = hwnd;
+					buttonPressed = true;
+					withinControl = true;
+
+					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD);
+					std::wstring buttonNumber = currentNumber + GetWindowTextToWstring(HANDLE_CURRENTCONTROL);
+
+					SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)buttonNumber.c_str());
+
+					RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+				}
+				break;
+				default:
+				{
+				}
+				break;
+			}
 			return (INT_PTR)TRUE;
 		}
 		break;
 		case WM_LBUTTONUP:
 		{
-			cout << "WM_LBUTTONUP" << endl;
+			if (buttonPressed)
+			{
+				buttonPressed = false;
+				withinControl = false;
+				RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+				//wcout << "Mouse button up - this is the current control text: " << GetWindowTextToWstring(HANDLE_CURRENTCONTROL) << endl;
+			}
+			return (INT_PTR)TRUE;
+		}
+		break;
+		case WM_MOUSEMOVE:
+		{
+			if (buttonPressed)
+			{
+				POINT point;
+
+				GetCursorPos(&point);
+
+				HWND HANDLE_BUFFER = WindowFromPoint(point);
+
+				switch (GetDlgCtrlID((HWND)HANDLE_BUFFER))
+				{
+					case ID_STATIC_NUMBER_FIELD:
+					{
+					}
+					break;
+					case ID_STATIC_NUMBER_ONE:
+					case ID_STATIC_NUMBER_TWO:
+					case ID_STATIC_NUMBER_THREE:
+					case ID_STATIC_NUMBER_FOUR:
+					case ID_STATIC_NUMBER_FIVE:
+					case ID_STATIC_NUMBER_SIX:
+					case ID_STATIC_NUMBER_SEVEN:
+					case ID_STATIC_NUMBER_EIGHT:
+					case ID_STATIC_NUMBER_NINE:
+					case ID_STATIC_NUMBER_ZERO:
+					{
+						if (HANDLE_CURRENTCONTROL == HANDLE_BUFFER)
+						{
+							//wcout << "Within control" << endl;
+							if (!withinControl)
+							{
+								withinControl = true;
+								RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+							}
+						}
+					}
+					break;
+					default:
+					{
+					}
+					break;
+				}
+			}
 			return (INT_PTR)TRUE;
 		}
 		break;
 		default:
 		{
-			//cout << "SubClass: " << msg << endl;
 		}
 		break;
 	}
+
 	return CallWindowProcW(ApplicationWindowProc, hwnd, msg, wParam, lParam);
 }
