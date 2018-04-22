@@ -7,8 +7,15 @@
 
 // Variable initialization
 WNDPROC Events::ApplicationWindowProc = NULL;
+
 bool Events::buttonPressed = false;
 bool Events::withinControl = false;
+bool Events::keyboardInput = false;
+
+int Events::displayedNumber = 0;
+int Events::additionalNumber = 0;
+int Events::currentResult = 0;
+
 
 // -------- Miscellaneous handles --------
 HWND Events::HANDLE_MAINWINDOW = NULL;
@@ -19,25 +26,38 @@ HWND Events::HANDLE_CURRENTCONTROL = NULL;
 
 
 // -------- Button handles --------
-HWND Events::TestButton = NULL;
+HWND Events::CONTROL_BUTTON_NUMBER_FIELD = NULL;
+
+HWND Events::CONTROL_BUTTON_ACTION_DELETEDISPLAYED = NULL;
+HWND Events::CONTROL_BUTTON_ACTION_DELETEEVERYTHING = NULL;
+HWND Events::CONTROL_BUTTON_ACTION_DELETECHARACTER = NULL;
+HWND Events::CONTROL_BUTTON_ACTION_DIVISION = NULL;
+
+HWND Events::CONTROL_BUTTON_NUMBER_ONE = NULL;
+HWND Events::CONTROL_BUTTON_NUMBER_TWO = NULL;
+HWND Events::CONTROL_BUTTON_NUMBER_THREE = NULL;
+HWND Events::CONTROL_BUTTON_ACTION_MULTIPLICATION = NULL;
+
+HWND Events::CONTROL_BUTTON_NUMBER_FOUR = NULL;
+HWND Events::CONTROL_BUTTON_NUMBER_FIVE = NULL;
+HWND Events::CONTROL_BUTTON_NUMBER_SIX = NULL;
+HWND Events::CONTROL_BUTTON_ACTION_SUBTRACTION = NULL;
+
+HWND Events::CONTROL_BUTTON_NUMBER_SEVEN = NULL;
+HWND Events::CONTROL_BUTTON_NUMBER_EIGHT = NULL;
+HWND Events::CONTROL_BUTTON_NUMBER_NINE = NULL;
+HWND Events::CONTROL_BUTTON_ACTION_ADDITION = NULL;
+
+HWND Events::CONTROL_BUTTON_PLUSMINUS = NULL;
+HWND Events::CONTROL_BUTTON_NUMBER_ZERO = NULL;
+HWND Events::CONTROL_BUTTON_CHARACTER_COMMA = NULL;
+HWND Events::CONTROL_BUTTON_ACTION_RESULT = NULL;
+
 
 // -------- ComboBox handles --------
 
 
 // -------- Static handles --------
-HWND Events::CONTROL_BUTTON_NUMBER_FIELD = NULL;
-HWND Events::CONTROL_BUTTON_NUMBER_ONE = NULL;
-HWND Events::CONTROL_BUTTON_NUMBER_TWO = NULL;
-HWND Events::CONTROL_BUTTON_NUMBER_THREE = NULL;
-HWND Events::CONTROL_BUTTON_NUMBER_FOUR = NULL;
-HWND Events::CONTROL_BUTTON_NUMBER_FIVE = NULL;
-HWND Events::CONTROL_BUTTON_NUMBER_SIX = NULL;
-HWND Events::CONTROL_BUTTON_NUMBER_SEVEN = NULL;
-HWND Events::CONTROL_BUTTON_NUMBER_EIGHT = NULL;
-HWND Events::CONTROL_BUTTON_NUMBER_NINE = NULL;
-HWND Events::CONTROL_BUTTON_PLUSMINUS = NULL;
-HWND Events::CONTROL_BUTTON_NUMBER_ZERO = NULL;
-HWND Events::CONTROL_BUTTON_COMMA = NULL;
 
 
 // -------- CheckBox handles --------
@@ -66,107 +86,155 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 	int buttonLocationColumnOne = 50;
 	int buttonLocationColumnTwo = buttonLocationColumnOne + buttonWidth + buttonSpace;
 	int buttonLocationColumnThree = buttonLocationColumnTwo + buttonWidth + buttonSpace;
+	int buttonLocationColumnFour = buttonLocationColumnThree + buttonWidth + buttonSpace;
 
-	int buttonLocationRowOne = 150;
+	int buttonLocationRowOne = 100;
 	int buttonLocationRowTwo = buttonLocationRowOne + buttonHeight + buttonSpace;
 	int buttonLocationRowThree = buttonLocationRowTwo + buttonHeight + buttonSpace;
 	int buttonLocationRowFour = buttonLocationRowThree + buttonHeight + buttonSpace;
+	int buttonLocationRowFive = buttonLocationRowFour + buttonHeight + buttonSpace;
+
 
 	// -------- Edit handles --------
 
 
 	// -------- Button handles --------
-	//TestButton = CreateWindowW(L"Button", L"",
-	//	WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
-	//	10, 10, 50, 50,					// x, y, w, h
-	//	Wea->hWnd, (HMENU)ID_BUTTON_NUMBER_ONE,
-	//	(HINSTANCE)GetWindowLong(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 
 	// -------- ComboBox handles --------
-	//Test
+	
 
-	// -------- Label handles --------
+	// -------- Static handles --------
 	CONTROL_BUTTON_NUMBER_FIELD = CreateWindowW(L"Static", L"0",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | SS_RIGHT | SS_CENTERIMAGE,
-		buttonLocationColumnOne, buttonLocationRowOne - buttonSpace - buttonHeight, 190, buttonHeight,					// x, y, w, h
+		buttonLocationColumnOne, buttonLocationRowOne - buttonSpace - buttonHeight, 255, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_NUMBER_FIELD,
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
+
+
+	// -------- Button handles --------
+	CONTROL_BUTTON_ACTION_DELETEDISPLAYED = CreateWindowW(L"Button", L"CE",
+		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
+		buttonLocationColumnOne, buttonLocationRowOne, buttonWidth, buttonHeight,					// x, y, w, h
+		Wea->hWnd, (HMENU)ID_BUTTON_ACTION_DELETEDISPLAYED,
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
+
+	CONTROL_BUTTON_ACTION_DELETEEVERYTHING = CreateWindowW(L"Button", L"C",
+		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
+		buttonLocationColumnTwo, buttonLocationRowOne, buttonWidth, buttonHeight,					// x, y, w, h
+		Wea->hWnd, (HMENU)ID_BUTTON_ACTION_DELETEEVERYTHING,
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
+	
+	CONTROL_BUTTON_ACTION_DELETECHARACTER = CreateWindowW(L"Button", L"<-",
+		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
+		buttonLocationColumnThree, buttonLocationRowOne, buttonWidth, buttonHeight,					// x, y, w, h
+		Wea->hWnd, (HMENU)ID_BUTTON_ACTION_DELETECHARACTER,
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
+
+	CONTROL_BUTTON_ACTION_DIVISION = CreateWindowW(L"Button", L"/",
+		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
+		buttonLocationColumnFour, buttonLocationRowOne, buttonWidth, buttonHeight,					// x, y, w, h
+		Wea->hWnd, (HMENU)ID_BUTTON_ACTION_DIVISION,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 
 	CONTROL_BUTTON_NUMBER_SEVEN = CreateWindowW(L"Button", L"7",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
-		buttonLocationColumnOne, buttonLocationRowOne, buttonWidth, buttonHeight,					// x, y, w, h
+		buttonLocationColumnOne, buttonLocationRowTwo, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_NUMBER_SEVEN,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_BUTTON_NUMBER_EIGHT = CreateWindowW(L"Button", L"8",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
-		buttonLocationColumnTwo, buttonLocationRowOne, buttonWidth, buttonHeight,					// x, y, w, h
+		buttonLocationColumnTwo, buttonLocationRowTwo, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_NUMBER_EIGHT,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_BUTTON_NUMBER_NINE = CreateWindowW(L"Button", L"9",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
-		buttonLocationColumnThree, buttonLocationRowOne, buttonWidth, buttonHeight,					// x, y, w, h
+		buttonLocationColumnThree, buttonLocationRowTwo, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_NUMBER_NINE,
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
+
+	CONTROL_BUTTON_ACTION_MULTIPLICATION = CreateWindowW(L"Button", L"*",
+		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
+		buttonLocationColumnFour, buttonLocationRowTwo, buttonWidth, buttonHeight,					// x, y, w, h
+		Wea->hWnd, (HMENU)ID_BUTTON_ACTION_MULTIPLICATION,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 
 	CONTROL_BUTTON_NUMBER_FOUR = CreateWindowW(L"Button", L"4",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
-		buttonLocationColumnOne, buttonLocationRowTwo, buttonWidth, buttonHeight,					// x, y, w, h
+		buttonLocationColumnOne, buttonLocationRowThree, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_NUMBER_FOUR,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_BUTTON_NUMBER_FIVE = CreateWindowW(L"Button", L"5",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
-		buttonLocationColumnTwo, buttonLocationRowTwo, buttonWidth, buttonHeight,					// x, y, w, h
+		buttonLocationColumnTwo, buttonLocationRowThree, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_NUMBER_FIVE,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_BUTTON_NUMBER_SIX = CreateWindowW(L"Button", L"6",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
-		buttonLocationColumnThree, buttonLocationRowTwo, buttonWidth, buttonHeight,					// x, y, w, h
+		buttonLocationColumnThree, buttonLocationRowThree, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_NUMBER_SIX,
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
+
+	CONTROL_BUTTON_ACTION_SUBTRACTION = CreateWindowW(L"Button", L"-",
+		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
+		buttonLocationColumnFour, buttonLocationRowThree, buttonWidth, buttonHeight,					// x, y, w, h
+		Wea->hWnd, (HMENU)ID_BUTTON_ACTION_SUBTRACTION,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 
 	CONTROL_BUTTON_NUMBER_ONE = CreateWindowW(L"Button", L"1",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
-		buttonLocationColumnOne, buttonLocationRowThree, buttonWidth, buttonHeight,					// x, y, w, h
+		buttonLocationColumnOne, buttonLocationRowFour, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_NUMBER_ONE,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_BUTTON_NUMBER_TWO = CreateWindowW(L"Button", L"2",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
-		buttonLocationColumnTwo, buttonLocationRowThree, buttonWidth, buttonHeight,					// x, y, w, h
+		buttonLocationColumnTwo, buttonLocationRowFour, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_NUMBER_TWO,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_BUTTON_NUMBER_THREE = CreateWindowW(L"Button", L"3",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
-		buttonLocationColumnThree, buttonLocationRowThree, buttonWidth, buttonHeight,				// x, y, w, h
+		buttonLocationColumnThree, buttonLocationRowFour, buttonWidth, buttonHeight,				// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_NUMBER_THREE,
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
+
+	CONTROL_BUTTON_ACTION_ADDITION = CreateWindowW(L"Button", L"+",
+		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
+		buttonLocationColumnFour, buttonLocationRowFour, buttonWidth, buttonHeight,				// x, y, w, h
+		Wea->hWnd, (HMENU)ID_BUTTON_ACTION_ADDITION,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 
 	CONTROL_BUTTON_PLUSMINUS = CreateWindowW(L"Button", L"+/-",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
-		buttonLocationColumnOne, buttonLocationRowFour, buttonWidth, buttonHeight,				// x, y, w, h
-		Wea->hWnd, (HMENU)ID_BUTTON_PLUSMINUS,
+		buttonLocationColumnOne, buttonLocationRowFive, buttonWidth, buttonHeight,				// x, y, w, h
+		Wea->hWnd, (HMENU)ID_BUTTON_CHARACTER_PLUSMINUS,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 	CONTROL_BUTTON_NUMBER_ZERO = CreateWindowW(L"Button", L"0",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
-		buttonLocationColumnTwo, buttonLocationRowFour, buttonWidth, buttonHeight,				// x, y, w, h
+		buttonLocationColumnTwo, buttonLocationRowFive, buttonWidth, buttonHeight,				// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_NUMBER_ZERO,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
-	CONTROL_BUTTON_COMMA = CreateWindowW(L"Button", L",",
+	CONTROL_BUTTON_CHARACTER_COMMA = CreateWindowW(L"Button", L",",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
-		buttonLocationColumnThree, buttonLocationRowFour, buttonWidth, buttonHeight,				// x, y, w, h
-		Wea->hWnd, (HMENU)ID_BUTTON_COMMA,
+		buttonLocationColumnThree, buttonLocationRowFive, buttonWidth, buttonHeight,				// x, y, w, h
+		Wea->hWnd, (HMENU)ID_BUTTON_CHARACTER_COMMA,
+		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
+
+	CONTROL_BUTTON_ACTION_RESULT = CreateWindowW(L"Button", L"=",
+		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
+		buttonLocationColumnFour, buttonLocationRowFive, buttonWidth, buttonHeight,				// x, y, w, h
+		Wea->hWnd, (HMENU)ID_BUTTON_ACTION_RESULT,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 
@@ -180,18 +248,30 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 	ApplicationWindowProc = (WNDPROC)GetWindowLongPtr(CONTROL_BUTTON_NUMBER_ONE, GWLP_WNDPROC);
 
 	// Set the a sub window-procedure for the following controls
+	SetWindowLongPtrW(CONTROL_BUTTON_ACTION_DELETEDISPLAYED, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_BUTTON_ACTION_DELETEEVERYTHING, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_BUTTON_ACTION_DELETECHARACTER, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_BUTTON_ACTION_DIVISION, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_SEVEN, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_EIGHT, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_NINE, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_BUTTON_ACTION_MULTIPLICATION, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_FOUR, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_FIVE, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_SIX, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_BUTTON_ACTION_SUBTRACTION, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_ONE, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_TWO, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_THREE, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_BUTTON_ACTION_ADDITION, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	
 	SetWindowLongPtrW(CONTROL_BUTTON_PLUSMINUS, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_ZERO, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
-	SetWindowLongPtrW(CONTROL_BUTTON_COMMA, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_BUTTON_CHARACTER_COMMA, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
+	SetWindowLongPtrW(CONTROL_BUTTON_ACTION_RESULT, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 
 	// Asign the application handle to the variable 
 	SendMessage(Wea->hWnd, WM_GETWINDOWHANDLE, 0, 0);
@@ -256,6 +336,26 @@ LRESULT Events::MainWindowProc_OnDawControl(lpWndEventArgs Wea)
 
 	switch (currentControlStruct->CtlID)
 	{
+		case ID_BUTTON_ACTION_DELETEDISPLAYED:
+		{
+			HandleItemDrawing(currentControlStruct, L"CE");
+		}
+		break;
+		case ID_BUTTON_ACTION_DELETEEVERYTHING:
+		{
+			HandleItemDrawing(currentControlStruct, L"C");
+		}
+		break;
+		case ID_BUTTON_ACTION_DELETECHARACTER:
+		{
+			HandleItemDrawing(currentControlStruct, L"<-");
+		}
+		break;
+		case ID_BUTTON_ACTION_DIVISION:
+		{
+			HandleItemDrawing(currentControlStruct, L"/");
+		}
+		break;
 		case ID_BUTTON_NUMBER_SEVEN:
 		{
 			HandleItemDrawing(currentControlStruct, L"7");
@@ -269,6 +369,11 @@ LRESULT Events::MainWindowProc_OnDawControl(lpWndEventArgs Wea)
 		case ID_BUTTON_NUMBER_NINE:
 		{
 			HandleItemDrawing(currentControlStruct, L"9");
+		}
+		break;
+		case ID_BUTTON_ACTION_MULTIPLICATION:
+		{
+			HandleItemDrawing(currentControlStruct, L"*");
 		}
 		break;
 		case ID_BUTTON_NUMBER_FOUR:
@@ -286,6 +391,11 @@ LRESULT Events::MainWindowProc_OnDawControl(lpWndEventArgs Wea)
 			HandleItemDrawing(currentControlStruct, L"6");
 		}
 		break;
+		case ID_BUTTON_ACTION_SUBTRACTION:
+		{
+			HandleItemDrawing(currentControlStruct, L"-");
+		}
+		break;
 		case ID_BUTTON_NUMBER_ONE:
 		{
 			HandleItemDrawing(currentControlStruct, L"1");
@@ -301,7 +411,12 @@ LRESULT Events::MainWindowProc_OnDawControl(lpWndEventArgs Wea)
 			HandleItemDrawing(currentControlStruct, L"3");
 		}
 		break;
-		case ID_BUTTON_PLUSMINUS:
+		case ID_BUTTON_ACTION_ADDITION:
+		{
+			HandleItemDrawing(currentControlStruct, L"+");
+		}
+		break;
+		case ID_BUTTON_CHARACTER_PLUSMINUS:
 		{
 			HandleItemDrawing(currentControlStruct, L"+/-");
 		}
@@ -311,9 +426,14 @@ LRESULT Events::MainWindowProc_OnDawControl(lpWndEventArgs Wea)
 			HandleItemDrawing(currentControlStruct, L"0");
 		}
 		break;
-		case ID_BUTTON_COMMA:
+		case ID_BUTTON_CHARACTER_COMMA:
 		{
 			HandleItemDrawing(currentControlStruct, L",");
+		}
+		break;
+		case ID_BUTTON_ACTION_RESULT:
+		{
+			HandleItemDrawing(currentControlStruct, L"=");
 		}
 		break;
 		default:
@@ -366,176 +486,97 @@ LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 	{
 		case VK_DELETE:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
-			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
-			}
+			DisplayCharacter(EnteredCharacter::Action_DeleteDisplayed);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_DELETEDISPLAYED);
 		}
 		break;
 		case VK_BACK:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD).length() > 1)
-			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD);
-				size_t stringLength = currentNumber.length();
-
-				currentNumber = currentNumber.substr(0, stringLength - 1);
-
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-			}
-			else
-			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
-			}
+			DisplayCharacter(EnteredCharacter::Action_DeleteCharacter);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_DELETECHARACTER);
 		}
 		break;
 		case VK_KEY_0:
 		case VK_NUMPAD0:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
-			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"0";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-			}
+			DisplayCharacter(EnteredCharacter::Number_Zero);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_ZERO);
 		}
 		break;
 		case VK_KEY_1:
 		case VK_NUMPAD1:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
-			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"1";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-			}
-			else
-			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"1");
-			}
+			DisplayCharacter(EnteredCharacter::Number_One);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_ONE);
 		}
 		break;
 		case VK_KEY_2:
 		case VK_NUMPAD2:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
-			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"2";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-			}
-			else
-			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"2");
-			}
+			DisplayCharacter(EnteredCharacter::Number_Two);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_TWO);
 		}
 		break;
 		case VK_KEY_3:
 		case VK_NUMPAD3:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
-			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"3";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-			}
-			else
-			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"3");
-			}
+			DisplayCharacter(EnteredCharacter::Number_Three);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_THREE);
 		}
 		break;
 		case VK_KEY_4:
 		case VK_NUMPAD4:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
-			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"4";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-			}
-			else
-			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"4");
-			}
+			DisplayCharacter(EnteredCharacter::Number_Four);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_FOUR);
 		}
 		break;
 		case VK_KEY_5:
 		case VK_NUMPAD5:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
-			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"5";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-			}
-			else
-			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"5");
-			}
+			DisplayCharacter(EnteredCharacter::Number_Five);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_FIVE);
 		}
 		break;
 		case VK_KEY_6:
 		case VK_NUMPAD6:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
-			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"6";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-			}
-			else
-			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"6");
-			}
+			DisplayCharacter(EnteredCharacter::Number_Six);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_SIX);
 		}
 		break;
 		case VK_KEY_7:
 		case VK_NUMPAD7:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
-			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"7";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-			}
-			else
-			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"7");
-			}
+			DisplayCharacter(EnteredCharacter::Number_Seven);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_SEVEN);
 		}
 		break;
 		case VK_KEY_8:
 		case VK_NUMPAD8:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
-			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"8";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-			}
-			else
-			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"8");
-			}
+			DisplayCharacter(EnteredCharacter::Number_Eight);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_EIGHT);
 		}
 		break;
 		case VK_KEY_9:
 		case VK_NUMPAD9:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
-			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"9";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-			}
-			else
-			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"9");
-			}
+			DisplayCharacter(EnteredCharacter::Number_Nine);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_NINE);
 		}
 		break;
 		case VK_OEM_COMMA:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
-			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L",";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-			}
-			else
-			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0,");
-			}
+			DisplayCharacter(EnteredCharacter::Character_Comma);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_CHARACTER_COMMA);
+		}
+		break;
+		case VK_OEM_MINUS:
+		{
+			//TODO: Add numpad and kkeyboard minus
+			DisplayCharacter(EnteredCharacter::Character_PlusMinus);
+			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_PLUSMINUS);
 		}
 		break;
 		default:
@@ -607,10 +648,17 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 	hDC = _passedControlStruct->hDC;
 	GetClientRect(_passedControlStruct->hwndItem, &rc);
 
-	if (buttonPressed && withinControl && (HANDLE_CURRENTCONTROL == HANDLE_BUFFER))
+	if ((buttonPressed && withinControl && (HANDLE_CURRENTCONTROL == HANDLE_BUFFER)) || keyboardInput)
 	{
 		hBrush = CreateSolidBrush(RGB(5, 221, 221));
 		//cout << "Button pressed!" << endl;
+
+		if (keyboardInput)
+		{
+			std::cout << "in painting" << std::endl;
+			DWORD threadID;
+			HANDLE newThread = CreateThread(0, 0, ResetButtonState, 0 , 0, &threadID);
+		}
 	}
 	else
 	{
@@ -657,6 +705,296 @@ std::wstring Events::GetClassNameToWstring(HWND _passedHandle)
 }
 
 
+void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
+{
+	switch (_passedCharacter)
+	{
+		case EnteredCharacter::Action_DeleteDisplayed:
+		{
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			{
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
+			}
+		}
+		break;
+		case EnteredCharacter::Action_DeleteEverything:
+		{
+			// TODO: Delete all number and calculating variables
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			{
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
+			}
+		}
+		break;
+		case EnteredCharacter::Action_DeleteCharacter:
+		{
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD).length() > 1)
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD);
+				size_t stringLength = currentNumber.length();
+
+				currentNumber = currentNumber.substr(0, stringLength - 1);
+
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
+			}
+		}
+		break;
+		case EnteredCharacter::Action_Disision:
+		{
+
+
+		}
+		break;
+		case EnteredCharacter::Number_Zero:
+		{
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"0";
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+		}
+		break;
+		case EnteredCharacter::Number_One:
+		{
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"1";
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"1");
+			}
+		}
+		break;
+		case EnteredCharacter::Number_Two:
+		{
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"2";
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"2");
+			}
+		}	
+		break;
+		case EnteredCharacter::Number_Three:
+		{
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"3";
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"3");
+			}
+		}
+		break;
+		case EnteredCharacter::Number_Four:
+		{
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"4";
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"4");
+			}
+		}
+		break;
+		case EnteredCharacter::Number_Five:
+		{
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"5";
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"5");
+			}
+		}
+		break;
+		case EnteredCharacter::Number_Six:
+		{
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"6";
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"6");
+			}
+		}
+		break;
+		case EnteredCharacter::Number_Seven:
+		{
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"7";
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"7");
+			}
+		}
+		break;
+		case EnteredCharacter::Number_Eight:
+		{
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"8";
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"8");
+			}
+		}
+		break;
+		case EnteredCharacter::Number_Nine:
+		{
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"9";
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"9");
+			}
+		}
+		break;
+		case EnteredCharacter::Character_PlusMinus:
+		{
+		}
+		break;
+		case EnteredCharacter::Character_Comma:
+		{
+			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			{
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L",";
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+			}
+			else
+			{
+				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0,");
+			}
+		}
+		break;
+		case EnteredCharacter::Action_Addition:
+		{
+		}
+		break;
+		case EnteredCharacter::Action_Subtraction:
+		{
+		}
+		break;
+		case EnteredCharacter::Action_Multiplication:
+		{
+		}
+		break;
+		default:
+		{
+		}
+		break;
+	}
+}
+
+
+void Events::HandleButtonAction(InputAction _passedAction, HWND _passedNewCurrentControl = NULL)
+{
+	switch (_passedAction)
+	{
+		case Events::Mouse:
+		{
+
+			RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+		}
+		break;
+		case Events::Keyboard:
+		{
+			HANDLE_CURRENTCONTROL = _passedNewCurrentControl;
+			keyboardInput = true;
+			RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+		}
+		break;
+		default:
+		{
+		}
+		break;
+	}
+}
+
+
+void Events::CalculateResult(int _passedCurrentResult, int _passedAdditionNumber, CalculationOperator _passedOperator)
+{
+	switch (_passedOperator)
+	{
+		case Events::Divison:
+		{
+			currentResult = _passedCurrentResult / _passedAdditionNumber;
+	
+			displayedNumber = currentResult;
+
+			DisplayCharacter(EnteredCharacter::Action_Result);
+		}
+		break;
+		case Events::Multiplication:
+		{
+
+		}
+		break;
+		case Events::Subtraction:
+		{
+
+		}
+		break;
+		case Events::Addition:
+		{
+
+		}
+		break;
+		default:
+		{
+		}
+		break;
+	}
+}
+
+
+DWORD WINAPI Events::ResetButtonState(__in LPVOID lpParameter)
+{
+	keyboardInput = false;
+	
+	std::chrono::time_point<std::chrono::system_clock> start, end;
+	start = std::chrono::system_clock::now();
+	
+	int elapsed_seconds = 0;
+
+	while (elapsed_seconds < 100)
+	{
+		end = std::chrono::system_clock::now();
+
+		elapsed_seconds = std::chrono::duration_cast<std::chrono::milliseconds>
+			(end - start).count();	
+	}
+	RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+
+	return 0;
+}
+
+
 LRESULT CALLBACK Events::CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	using namespace std;
@@ -671,59 +1009,141 @@ LRESULT CALLBACK Events::CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wP
 			GetCursorPos(&point);
 
 			HANDLE_CURRENTCONTROL = WindowFromPoint(point);
+
+			HANDLE_CURRENTCONTROL = hwnd;
+			buttonPressed = true;
+			withinControl = true;
+
+			std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD);
+			std::wstring buttonNumber = currentNumber + GetWindowTextToWstring(HANDLE_CURRENTCONTROL);
 			
 			switch (GetDlgCtrlID((HWND)HANDLE_CURRENTCONTROL))
 			{
-				case ID_BUTTON_NUMBER_FIELD:
+
+				case ID_BUTTON_ACTION_DELETEDISPLAYED:
 				{
+					DisplayCharacter(EnteredCharacter::Action_DeleteDisplayed);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_ACTION_DELETEEVERYTHING:
+				{
+					DisplayCharacter(EnteredCharacter::Action_DeleteEverything);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_ACTION_DELETECHARACTER:
+				{
+					DisplayCharacter(EnteredCharacter::Action_DeleteCharacter);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_ACTION_DIVISION:
+				{
+					DisplayCharacter(EnteredCharacter::Action_Disision);
+					HandleButtonAction(InputAction::Mouse);
 				}
 				break;
 				case ID_BUTTON_NUMBER_SEVEN:
-				case ID_BUTTON_NUMBER_EIGHT:
-				case ID_BUTTON_NUMBER_NINE:
-				case ID_BUTTON_NUMBER_FOUR:
-				case ID_BUTTON_NUMBER_FIVE:
-				case ID_BUTTON_NUMBER_SIX:
-				case ID_BUTTON_NUMBER_ONE:
-				case ID_BUTTON_NUMBER_TWO:
-				case ID_BUTTON_NUMBER_THREE:
-				case ID_BUTTON_PLUSMINUS:
-				case ID_BUTTON_NUMBER_ZERO:
-				case ID_BUTTON_COMMA:
 				{
-					
-					HANDLE_CURRENTCONTROL = hwnd;
-					buttonPressed = true;
-					withinControl = true;
-
-					std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD);
-					std::wstring buttonNumber = currentNumber + GetWindowTextToWstring(HANDLE_CURRENTCONTROL);
-
-					if (HANDLE_CURRENTCONTROL != CONTROL_BUTTON_PLUSMINUS)
-					{
-						SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)buttonNumber.c_str());
-					}
-					else
-					{
-						if (currentNumber.substr(0, 1) == L"-")
-						{
-							currentNumber = currentNumber.substr(1, currentNumber.length());
-
-							SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-						}
-						else
-						{
-							currentNumber = L"-" + currentNumber;
-
-							SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-						}
-					}
-
-					RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+					DisplayCharacter(EnteredCharacter::Number_Seven);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_NUMBER_EIGHT:
+				{
+					DisplayCharacter(EnteredCharacter::Number_Eight);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_NUMBER_NINE:
+				{
+					DisplayCharacter(EnteredCharacter::Number_Nine);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_ACTION_MULTIPLICATION:
+				{
+					DisplayCharacter(EnteredCharacter::Action_Multiplication);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_NUMBER_FOUR:
+				{
+					DisplayCharacter(EnteredCharacter::Number_Four);
+					HandleButtonAction(InputAction::Mouse);;
+				}
+				break;
+				case ID_BUTTON_NUMBER_FIVE:
+				{
+					DisplayCharacter(EnteredCharacter::Number_Five);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_NUMBER_SIX:
+				{
+					DisplayCharacter(EnteredCharacter::Number_Six);
+					HandleButtonAction(InputAction::Mouse); 
+				}
+				break;
+				case ID_BUTTON_ACTION_SUBTRACTION:
+				{
+					DisplayCharacter(EnteredCharacter::Action_Subtraction);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_NUMBER_ONE:
+				{
+					DisplayCharacter(EnteredCharacter::Number_One);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_NUMBER_TWO:
+				{
+					DisplayCharacter(EnteredCharacter::Number_Two);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_NUMBER_THREE:
+				{
+					DisplayCharacter(EnteredCharacter::Number_Three);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_ACTION_ADDITION:
+				{
+					DisplayCharacter(EnteredCharacter::Action_Addition);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_CHARACTER_PLUSMINUS:
+				{
+					DisplayCharacter(EnteredCharacter::Character_PlusMinus);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_NUMBER_ZERO:
+				{
+					DisplayCharacter(EnteredCharacter::Number_Zero);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_CHARACTER_COMMA:
+				{
+					DisplayCharacter(EnteredCharacter::Character_Comma);
+					HandleButtonAction(InputAction::Mouse);
+				}
+				break;
+				case ID_BUTTON_ACTION_RESULT:
+				{
+					DisplayCharacter(EnteredCharacter::Action_Result);
+					HandleButtonAction(InputAction::Mouse);
 				}
 				break;
 				default:
 				{
+					buttonPressed = false;
+					withinControl = false;
 				}
 				break;
 			}
@@ -758,18 +1178,26 @@ LRESULT CALLBACK Events::CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wP
 					{
 					}
 					break;
+					case ID_BUTTON_ACTION_DELETEDISPLAYED:
+					case ID_BUTTON_ACTION_DELETEEVERYTHING:
+					case ID_BUTTON_ACTION_DELETECHARACTER:
+					case ID_BUTTON_ACTION_DIVISION:
 					case ID_BUTTON_NUMBER_SEVEN:
 					case ID_BUTTON_NUMBER_EIGHT:
 					case ID_BUTTON_NUMBER_NINE:
+					case ID_BUTTON_ACTION_MULTIPLICATION:
 					case ID_BUTTON_NUMBER_FOUR:
 					case ID_BUTTON_NUMBER_FIVE:
 					case ID_BUTTON_NUMBER_SIX:
+					case ID_BUTTON_ACTION_SUBTRACTION:
 					case ID_BUTTON_NUMBER_ONE:
 					case ID_BUTTON_NUMBER_TWO:
 					case ID_BUTTON_NUMBER_THREE:
-					case ID_BUTTON_PLUSMINUS:
+					case ID_BUTTON_ACTION_ADDITION:
+					case ID_BUTTON_CHARACTER_PLUSMINUS:
 					case ID_BUTTON_NUMBER_ZERO:
-					case ID_BUTTON_COMMA:
+					case ID_BUTTON_CHARACTER_COMMA:
+					case ID_BUTTON_ACTION_RESULT:
 					{
 						if (HANDLE_CURRENTCONTROL == HANDLE_BUFFER)
 						{

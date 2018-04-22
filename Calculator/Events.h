@@ -17,40 +17,48 @@
 #define VK_KEY_9								0x39
 
 // -------- Edit IDs --------
-#define ID_EDIT_TEXTHOLDER						1100
-#define ID_EDIT_WINDOWTEXT						1101
-#define ID_EDIT_CLASSTEXT						1102
 
 
 // -------- Button IDs --------
+#define ID_BUTTON_NUMBER_FIELD					1200
+
+#define ID_BUTTON_ACTION_DELETEDISPLAYED		1201
+#define ID_BUTTON_ACTION_DELETEEVERYTHING		1202
+#define ID_BUTTON_ACTION_DELETECHARACTER		1203
+#define ID_BUTTON_ACTION_DIVISION				1204
+
+#define ID_BUTTON_NUMBER_SEVEN					1205
+#define ID_BUTTON_NUMBER_EIGHT					1206
+#define ID_BUTTON_NUMBER_NINE					1207
+#define ID_BUTTON_ACTION_MULTIPLICATION			1208
+
+#define ID_BUTTON_NUMBER_FOUR					1209
+#define ID_BUTTON_NUMBER_FIVE					1210
+#define ID_BUTTON_NUMBER_SIX					1211
+#define ID_BUTTON_ACTION_SUBTRACTION			1212
+
+#define ID_BUTTON_NUMBER_ONE					1213
+#define ID_BUTTON_NUMBER_TWO					1214
+#define ID_BUTTON_NUMBER_THREE					1215
+#define ID_BUTTON_ACTION_ADDITION				1216
+
+#define ID_BUTTON_CHARACTER_PLUSMINUS						1217
+#define ID_BUTTON_NUMBER_ZERO					1218
+#define ID_BUTTON_CHARACTER_COMMA							1219
+#define ID_BUTTON_ACTION_RESULT					1220
 
 
 // -------- ComboBox IDs --------
-#define ID_COMBOBOX_							1300
+
 
 
 // -------- Static IDs --------
-#define ID_BUTTON_NUMBER_FIELD					1400
-#define ID_BUTTON_NUMBER_ONE					1401
-#define ID_BUTTON_NUMBER_TWO					1402
-#define ID_BUTTON_NUMBER_THREE					1403
-#define ID_BUTTON_NUMBER_FOUR					1404
-#define ID_BUTTON_NUMBER_FIVE					1405
-#define ID_BUTTON_NUMBER_SIX					1406
-#define ID_BUTTON_NUMBER_SEVEN					1407
-#define ID_BUTTON_NUMBER_EIGHT					1408
-#define ID_BUTTON_NUMBER_NINE					1409
-#define ID_BUTTON_PLUSMINUS						1410
-#define ID_BUTTON_NUMBER_ZERO					1411
-#define ID_BUTTON_COMMA							1412
 
 
 // -------- CheckBox IDs --------
-#define ID_CHECKBOX_DYNAMIC_CAPTURECHECK_ONE	1500
 
 
 // -------- UpDown handles --------
-#define ID_UPDOWN_EDIT_SETPOS_X					1600
 
 
 // Custom messages
@@ -81,6 +89,44 @@ public:
 		LRESULT(*fnPtr)(lpWndEventArgs);
 	};
 
+	enum EnteredCharacter
+	{
+		Number_Zero,
+		Number_One,
+		Number_Two,
+		Number_Three,
+		Number_Four,
+		Number_Five,
+		Number_Six,
+		Number_Seven,
+		Number_Eight,
+		Number_Nine,
+		Character_PlusMinus,
+		Character_Comma,
+		Action_DeleteDisplayed,
+		Action_DeleteEverything,
+		Action_DeleteCharacter,
+		Action_Addition,
+		Action_Subtraction,
+		Action_Disision,
+		Action_Multiplication,
+		Action_Result
+	};
+
+	enum InputAction
+	{
+		Mouse,
+		Keyboard
+	};
+
+	enum CalculationOperator
+	{
+		Divison,
+		Multiplication,
+		Subtraction,
+		Addition
+	};
+
 	// Event functions declaration
 	static LRESULT					MainWindowProc_OnCreate(lpWndEventArgs Wea);
 	static LRESULT					MainWindowProc_OnPaint(lpWndEventArgs Wea);
@@ -104,11 +150,26 @@ private:
 	// Function declarations
 	static std::wstring				GetWindowTextToWstring(HWND _passedHandle);
 	static std::wstring				GetClassNameToWstring(HWND _passedHandle);
+
+	static void						DisplayCharacter(EnteredCharacter _passedCharacter);
+	static void						HandleButtonAction(InputAction _passedAction, HWND _passedNewCurrentControl);
+	static void						CalculateResult(int _passedCurrentResult, int _passedAdditionNumber, CalculationOperator _passedOperator);
+
+	static DWORD WINAPI				ResetButtonState(__in LPVOID lpParameter);
 	static LRESULT CALLBACK			CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+		
+	// Vaiables
 	static WNDPROC ApplicationWindowProc;
+
 	static bool buttonPressed;
 	static bool withinControl;
+	static bool keyboardInput;
+
+	static int displayedNumber;
+	static int additionalNumber;
+	static int currentResult;
+
 
 	// -------- Miscellaneous handles --------
 	static HWND HANDLE_MAINWINDOW;
@@ -119,26 +180,39 @@ private:
 
 
 	// -------- Button handles --------
-	static HWND TestButton;
+	static HWND CONTROL_BUTTON_NUMBER_FIELD;
+
+	static HWND CONTROL_BUTTON_ACTION_DELETEDISPLAYED;
+	static HWND CONTROL_BUTTON_ACTION_DELETEEVERYTHING;
+	static HWND CONTROL_BUTTON_ACTION_DELETECHARACTER;
+	static HWND CONTROL_BUTTON_ACTION_DIVISION;
+	
+	static HWND CONTROL_BUTTON_NUMBER_ONE;
+	static HWND CONTROL_BUTTON_NUMBER_TWO;
+	static HWND CONTROL_BUTTON_NUMBER_THREE;
+	static HWND CONTROL_BUTTON_ACTION_MULTIPLICATION;
+	
+	static HWND CONTROL_BUTTON_NUMBER_FOUR;
+	static HWND CONTROL_BUTTON_NUMBER_FIVE;
+	static HWND CONTROL_BUTTON_NUMBER_SIX;
+	static HWND CONTROL_BUTTON_ACTION_SUBTRACTION;
+
+	static HWND CONTROL_BUTTON_NUMBER_SEVEN;
+	static HWND CONTROL_BUTTON_NUMBER_EIGHT;
+	static HWND CONTROL_BUTTON_NUMBER_NINE;
+	static HWND CONTROL_BUTTON_ACTION_ADDITION;
+
+	static HWND CONTROL_BUTTON_PLUSMINUS;
+	static HWND CONTROL_BUTTON_NUMBER_ZERO;
+	static HWND CONTROL_BUTTON_CHARACTER_COMMA;
+	static HWND CONTROL_BUTTON_ACTION_RESULT;
+
 
 	// -------- ComboBox handles --------
 
 
 	// -------- Static handles --------
-	static HWND CONTROL_BUTTON_NUMBER_FIELD;
-	static HWND CONTROL_BUTTON_NUMBER_ONE;
-	static HWND CONTROL_BUTTON_NUMBER_TWO;
-	static HWND CONTROL_BUTTON_NUMBER_THREE;
-	static HWND CONTROL_BUTTON_NUMBER_FOUR;
-	static HWND CONTROL_BUTTON_NUMBER_FIVE;
-	static HWND CONTROL_BUTTON_NUMBER_SIX;
-	static HWND CONTROL_BUTTON_NUMBER_SEVEN;
-	static HWND CONTROL_BUTTON_NUMBER_EIGHT;
-	static HWND CONTROL_BUTTON_NUMBER_NINE;
-	static HWND CONTROL_BUTTON_PLUSMINUS;
-	static HWND CONTROL_BUTTON_NUMBER_ZERO;
-	static HWND CONTROL_BUTTON_COMMA;
-
+	
 
 	// -------- CheckBox handles --------
 
