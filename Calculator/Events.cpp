@@ -8,7 +8,8 @@
 // Variable initialization
 WNDPROC Events::ApplicationWindowProc = NULL;
 
-bool Events::buttonPressed = false;
+bool Events::mouseButtonPressed = false;
+bool Events::keyboardPressed = false;
 bool Events::withinControl = false;
 bool Events::keyboardInput = false;
 
@@ -102,7 +103,7 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 
 
 	// -------- ComboBox handles --------
-	
+
 
 	// -------- Static handles --------
 	CONTROL_BUTTON_NUMBER_FIELD = CreateWindowW(L"Static", L"0",
@@ -124,7 +125,7 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 		buttonLocationColumnTwo, buttonLocationRowOne, buttonWidth, buttonHeight,					// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_ACTION_DELETEEVERYTHING,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
-	
+
 	CONTROL_BUTTON_ACTION_DELETECHARACTER = CreateWindowW(L"Button", L"<-",
 		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_PUSHBUTTON,
 		buttonLocationColumnThree, buttonLocationRowOne, buttonWidth, buttonHeight,					// x, y, w, h
@@ -252,7 +253,7 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 	SetWindowLongPtrW(CONTROL_BUTTON_ACTION_DELETEEVERYTHING, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_ACTION_DELETECHARACTER, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_ACTION_DIVISION, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
-	
+
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_SEVEN, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_EIGHT, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_NINE, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
@@ -262,12 +263,12 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_FIVE, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_SIX, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_ACTION_SUBTRACTION, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
-	
+
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_ONE, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_TWO, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_THREE, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_ACTION_ADDITION, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
-	
+
 	SetWindowLongPtrW(CONTROL_BUTTON_PLUSMINUS, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_NUMBER_ZERO, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
 	SetWindowLongPtrW(CONTROL_BUTTON_CHARACTER_COMMA, GWLP_WNDPROC, (LONG_PTR)CustomControlsWindowProc);
@@ -450,7 +451,7 @@ LRESULT Events::MainWindowProc_OnMouseMove(lpWndEventArgs Wea)
 {
 	using namespace std;
 
-	if (buttonPressed)
+	if (mouseButtonPressed)
 	{
 		POINT point;
 
@@ -477,7 +478,6 @@ LRESULT Events::MainWindowProc_OnMouseMove(lpWndEventArgs Wea)
 }
 
 
-
 LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 {
 	using namespace std;
@@ -487,96 +487,154 @@ LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 		case VK_DELETE:
 		{
 			DisplayCharacter(EnteredCharacter::Action_DeleteDisplayed);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_DELETEDISPLAYED);
+
+			if (!keyboardPressed)
+			{
+				//system("cls");
+				//cout << "key down<----------------------------------------------: " << endl;
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_DELETEDISPLAYED);
+			}
 		}
 		break;
 		case VK_BACK:
 		{
 			DisplayCharacter(EnteredCharacter::Action_DeleteCharacter);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_DELETECHARACTER);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_DELETECHARACTER);
+			}
 		}
 		break;
 		case VK_KEY_0:
 		case VK_NUMPAD0:
 		{
 			DisplayCharacter(EnteredCharacter::Number_Zero);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_ZERO);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_ZERO);
+			}
 		}
 		break;
 		case VK_KEY_1:
 		case VK_NUMPAD1:
 		{
 			DisplayCharacter(EnteredCharacter::Number_One);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_ONE);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_ONE);
+			}
 		}
 		break;
 		case VK_KEY_2:
 		case VK_NUMPAD2:
 		{
 			DisplayCharacter(EnteredCharacter::Number_Two);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_TWO);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_TWO);
+			}
 		}
 		break;
 		case VK_KEY_3:
 		case VK_NUMPAD3:
 		{
 			DisplayCharacter(EnteredCharacter::Number_Three);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_THREE);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_THREE);
+			}
 		}
 		break;
 		case VK_KEY_4:
 		case VK_NUMPAD4:
 		{
 			DisplayCharacter(EnteredCharacter::Number_Four);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_FOUR);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_FOUR);
+			}
 		}
 		break;
 		case VK_KEY_5:
 		case VK_NUMPAD5:
 		{
 			DisplayCharacter(EnteredCharacter::Number_Five);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_FIVE);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_FIVE);
+			}
 		}
 		break;
 		case VK_KEY_6:
 		case VK_NUMPAD6:
 		{
 			DisplayCharacter(EnteredCharacter::Number_Six);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_SIX);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_SIX);
+			}
 		}
 		break;
 		case VK_KEY_7:
 		case VK_NUMPAD7:
 		{
 			DisplayCharacter(EnteredCharacter::Number_Seven);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_SEVEN);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_SEVEN);
+			}
 		}
 		break;
 		case VK_KEY_8:
 		case VK_NUMPAD8:
 		{
 			DisplayCharacter(EnteredCharacter::Number_Eight);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_EIGHT);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_EIGHT);
+			}
 		}
 		break;
 		case VK_KEY_9:
 		case VK_NUMPAD9:
 		{
 			DisplayCharacter(EnteredCharacter::Number_Nine);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_NINE);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_NINE);
+			}
 		}
 		break;
 		case VK_OEM_COMMA:
 		{
 			DisplayCharacter(EnteredCharacter::Character_Comma);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_CHARACTER_COMMA);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_CHARACTER_COMMA);
+			}
 		}
 		break;
 		case VK_OEM_MINUS:
 		{
 			//TODO: Add numpad and kkeyboard minus
 			DisplayCharacter(EnteredCharacter::Character_PlusMinus);
-			HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_PLUSMINUS);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_PLUSMINUS);
+			}
 		}
 		break;
 		default:
@@ -584,6 +642,17 @@ LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 		}
 		break;
 	}
+
+	return 0;
+}
+
+
+LRESULT Events::MainWindowProc_OnKeyUp(lpWndEventArgs Wea)
+{
+	using namespace std;
+
+	keyboardPressed = false;
+	cout << "key up<----------------------------------------------: " << endl;
 
 	return 0;
 }
@@ -643,27 +712,32 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 
 	HANDLE_BUFFER = WindowFromPoint(point);
 
-	//wcout << "Pressed handle text: " << GetWindowTextToWstring(HANDLE_CURRENTSELECTED) << " - Current handle text: " << GetWindowTextToWstring(HANDLE_BUFFER) << endl;
+	//wcout << "Pressed handle text: " << GetWindowTextToWstring(HANDLE_CURRENTCONTROL) << " - Current handle text: " << GetWindowTextToWstring(HANDLE_BUFFER) << endl;
+
+	cout << "mouseButtonPressed! - " << mouseButtonPressed << endl;
+	cout << "withinControl! - " << withinControl << endl;
+	cout << "keyboardPressed! - " << keyboardPressed << endl;
+	cout << "keyboardInput! - " << keyboardInput << endl;
+	cout << endl;
 
 	hDC = _passedControlStruct->hDC;
 	GetClientRect(_passedControlStruct->hwndItem, &rc);
 
-	if ((buttonPressed && withinControl && (HANDLE_CURRENTCONTROL == HANDLE_BUFFER)) || keyboardInput)
+	if ((mouseButtonPressed && withinControl && (HANDLE_CURRENTCONTROL == HANDLE_BUFFER)) || keyboardInput)
 	{
-		hBrush = CreateSolidBrush(RGB(5, 221, 221));
-		//cout << "Button pressed!" << endl;
 
-		if (keyboardInput)
-		{
-			std::cout << "in painting" << std::endl;
-			DWORD threadID;
-			HANDLE newThread = CreateThread(0, 0, ResetButtonState, 0 , 0, &threadID);
-		}
+		hBrush = CreateSolidBrush(RGB(5, 221, 221));
+
+		if (keyboardPressed) { keyboardInput = false; }
+		//cout << "keyboardInput!" << keyboardInput << endl;
 	}
 	else
 	{
 		hBrush = CreateSolidBrush(RGB(255, 255, 255));
-		//cout << "Button not pressed!" << endl;
+
+		if (keyboardPressed) { keyboardInput = true; }
+
+		//cout << "keyboardInput!" << keyboardInput << endl;
 	}
 
 	FillRect(hDC, &rc, hBrush);
@@ -782,7 +856,7 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 			{
 				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"2");
 			}
-		}	
+		}
 		break;
 		case EnteredCharacter::Number_Three:
 		{
@@ -925,8 +999,12 @@ void Events::HandleButtonAction(InputAction _passedAction, HWND _passedNewCurren
 		case Events::Keyboard:
 		{
 			HANDLE_CURRENTCONTROL = _passedNewCurrentControl;
-			keyboardInput = true;
+			keyboardPressed = true;
+
 			RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+
+			DWORD threadID;
+			HANDLE newThread = CreateThread(0, 0, ResetButtonState, 0, 0, &threadID);
 		}
 		break;
 		default:
@@ -944,7 +1022,7 @@ void Events::CalculateResult(int _passedCurrentResult, int _passedAdditionNumber
 		case Events::Divison:
 		{
 			currentResult = _passedCurrentResult / _passedAdditionNumber;
-	
+
 			displayedNumber = currentResult;
 
 			DisplayCharacter(EnteredCharacter::Action_Result);
@@ -975,21 +1053,44 @@ void Events::CalculateResult(int _passedCurrentResult, int _passedAdditionNumber
 
 DWORD WINAPI Events::ResetButtonState(__in LPVOID lpParameter)
 {
-	keyboardInput = false;
-	
-	std::chrono::time_point<std::chrono::system_clock> start, end;
-	start = std::chrono::system_clock::now();
-	
+	using namespace std;
+
+	cout << "----------------------->loop started: " << endl;
+
+	chrono::time_point<chrono::system_clock> start, end;
+	start = chrono::system_clock::now();
+
 	int elapsed_seconds = 0;
 
-	while (elapsed_seconds < 100)
+	while (keyboardPressed)
 	{
-		end = std::chrono::system_clock::now();
+		end = chrono::system_clock::now();
+		/*std::cout << "keyboardinput: " << keyboardPressed << std::endl;*/
+		elapsed_seconds = chrono::duration_cast<chrono::milliseconds>(end - start).count();
 
-		elapsed_seconds = std::chrono::duration_cast<std::chrono::milliseconds>
-			(end - start).count();	
+		if (elapsed_seconds >= 50)
+		{
+			start = chrono::system_clock::now();
+			RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+		}
 	}
-	RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+
+	if (!keyboardInput)
+	{
+		RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+	}
+	else
+	{
+		keyboardInput = false;
+	}
+
+	cout << "mouseButtonPressed! - " << mouseButtonPressed << endl;
+	cout << "withinControl! - " << withinControl << endl;
+	cout << "keyboardPressed! - " << keyboardPressed << endl;
+	cout << "keyboardInput! - " << keyboardInput << endl;
+	cout << endl;
+
+	cout << "----------------------->loop ended: " << endl;
 
 	return 0;
 }
@@ -1004,22 +1105,15 @@ LRESULT CALLBACK Events::CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wP
 		case WM_LBUTTONDOWN:
 		case WM_LBUTTONDBLCLK:
 		{
-			POINT point;
-
-			GetCursorPos(&point);
-
-			HANDLE_CURRENTCONTROL = WindowFromPoint(point);
-
 			HANDLE_CURRENTCONTROL = hwnd;
-			buttonPressed = true;
+			mouseButtonPressed = true;
 			withinControl = true;
 
 			std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD);
 			std::wstring buttonNumber = currentNumber + GetWindowTextToWstring(HANDLE_CURRENTCONTROL);
-			
+
 			switch (GetDlgCtrlID((HWND)HANDLE_CURRENTCONTROL))
 			{
-
 				case ID_BUTTON_ACTION_DELETEDISPLAYED:
 				{
 					DisplayCharacter(EnteredCharacter::Action_DeleteDisplayed);
@@ -1071,7 +1165,7 @@ LRESULT CALLBACK Events::CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wP
 				case ID_BUTTON_NUMBER_FOUR:
 				{
 					DisplayCharacter(EnteredCharacter::Number_Four);
-					HandleButtonAction(InputAction::Mouse);;
+					HandleButtonAction(InputAction::Mouse);
 				}
 				break;
 				case ID_BUTTON_NUMBER_FIVE:
@@ -1083,7 +1177,7 @@ LRESULT CALLBACK Events::CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wP
 				case ID_BUTTON_NUMBER_SIX:
 				{
 					DisplayCharacter(EnteredCharacter::Number_Six);
-					HandleButtonAction(InputAction::Mouse); 
+					HandleButtonAction(InputAction::Mouse);
 				}
 				break;
 				case ID_BUTTON_ACTION_SUBTRACTION:
@@ -1142,7 +1236,7 @@ LRESULT CALLBACK Events::CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wP
 				break;
 				default:
 				{
-					buttonPressed = false;
+					mouseButtonPressed = false;
 					withinControl = false;
 				}
 				break;
@@ -1152,9 +1246,9 @@ LRESULT CALLBACK Events::CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wP
 		break;
 		case WM_LBUTTONUP:
 		{
-			if (buttonPressed)
+			if (mouseButtonPressed)
 			{
-				buttonPressed = false;
+				mouseButtonPressed = false;
 				withinControl = false;
 				RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 				//wcout << "Mouse button up - this is the current control text: " << GetWindowTextToWstring(HANDLE_CURRENTCONTROL) << endl;
@@ -1164,7 +1258,7 @@ LRESULT CALLBACK Events::CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wP
 		break;
 		case WM_MOUSEMOVE:
 		{
-			if (buttonPressed)
+			if (mouseButtonPressed)
 			{
 				POINT point;
 

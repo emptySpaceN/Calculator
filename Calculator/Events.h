@@ -135,6 +135,7 @@ public:
 	static LRESULT					MainWindowProc_OnDawControl(lpWndEventArgs Wea);
 	static LRESULT					MainWindowProc_OnMouseMove(lpWndEventArgs Wea);
 	static LRESULT					MainWindowProc_OnKeyDown(lpWndEventArgs Wea);
+	static LRESULT					MainWindowProc_OnKeyUp(lpWndEventArgs Wea);
 
 	// -------- Normal functions and global hooks --------
 	static LRESULT CALLBACK			GlobalKeyboardHook(int nCode, WPARAM wParam, LPARAM lParam);
@@ -162,7 +163,8 @@ private:
 	// Vaiables
 	static WNDPROC ApplicationWindowProc;
 
-	static bool buttonPressed;
+	static bool mouseButtonPressed;
+	static bool keyboardPressed;
 	static bool withinControl;
 	static bool keyboardInput;
 
