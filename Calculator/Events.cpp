@@ -27,7 +27,7 @@ HWND Events::HANDLE_CURRENTCONTROL = NULL;
 
 
 // -------- Button handles --------
-HWND Events::CONTROL_BUTTON_NUMBER_FIELD = NULL;
+HWND Events::CONTROL_STATIC_NUMBER_FIELD = NULL;
 
 HWND Events::CONTROL_BUTTON_ACTION_DELETEDISPLAYED = NULL;
 HWND Events::CONTROL_BUTTON_ACTION_DELETEEVERYTHING = NULL;
@@ -99,17 +99,11 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 	// -------- Edit handles --------
 
 
-	// -------- Button handles --------
-
-
-	// -------- ComboBox handles --------
-
-
 	// -------- Static handles --------
-	CONTROL_BUTTON_NUMBER_FIELD = CreateWindowW(L"Static", L"0",
-		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | SS_RIGHT | SS_CENTERIMAGE,
+	CONTROL_STATIC_NUMBER_FIELD = CreateWindowW(L"Static", L"0",
+		/*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE | SS_OWNERDRAW,
 		buttonLocationColumnOne, buttonLocationRowOne - buttonSpace - buttonHeight, 255, buttonHeight,					// x, y, w, h
-		Wea->hWnd, (HMENU)ID_BUTTON_NUMBER_FIELD,
+		Wea->hWnd, (HMENU)ID_STATIC_NUMBER_FIELD,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
 
 
@@ -237,6 +231,9 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 		buttonLocationColumnFour, buttonLocationRowFive, buttonWidth, buttonHeight,				// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_ACTION_RESULT,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
+	
+	
+	// -------- ComboBox handles --------
 
 
 	// -------- CheckBox handles --------
@@ -299,11 +296,13 @@ LRESULT Events::MainWindowProc_OnPaint(lpWndEventArgs Wea)
 	hFont = CreateFontW(80, 0, 0, 0, FW_BOLD, 0, 0, 0, 0, 0, 0, 2, 0, L"SYSTEM_FIXED_FONT");
 	hTmp = (HFONT)SelectObject(hDC, hFont);
 	SetBkMode(hDC, TRANSPARENT);
-	//DrawText(hDC, L"Hello, World!", -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	std::wstring  szUeberschrift = L"Test";
+	//DrawText(hDC, szUeberschrift.c_str(), lstrlenW(szUeberschrift.c_str()), &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	TextOutW(hDC, 1, 1, szUeberschrift.c_str(), lstrlenW(szUeberschrift.c_str()));
 	DeleteObject(SelectObject(hDC, hTmp));
 
 	EndPaint(Wea->hWnd, &ps);
-
+	
 	return 0;
 }
 
@@ -337,6 +336,11 @@ LRESULT Events::MainWindowProc_OnDawControl(lpWndEventArgs Wea)
 
 	switch (currentControlStruct->CtlID)
 	{
+		case ID_STATIC_NUMBER_FIELD:
+		{
+			cout << "Field!" << endl;
+			HandleItemDrawing(currentControlStruct, L"0");
+		}
 		case ID_BUTTON_ACTION_DELETEDISPLAYED:
 		{
 			HandleItemDrawing(currentControlStruct, L"CE");
@@ -482,6 +486,8 @@ LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 {
 	using namespace std;
 
+	cout << Wea->wParam << endl;
+
 	switch (Wea->wParam)
 	{
 		case VK_DELETE:
@@ -491,8 +497,8 @@ LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 			if (!keyboardPressed)
 			{
 				//system("cls");
-				//cout << "key down<----------------------------------------------: " << endl;
-				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_DELETEDISPLAYED);
+				cout << "key down<----------------------------------------------: " << endl;
+				//HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_DELETEDISPLAYED);
 			}
 		}
 		break;
@@ -590,6 +596,7 @@ LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 
 			if (!keyboardPressed)
 			{
+				cout << "test 7" << endl;
 				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_SEVEN);
 			}
 		}
@@ -617,6 +624,7 @@ LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 		}
 		break;
 		case VK_OEM_COMMA:
+		case VK_DECIMAL:
 		{
 			DisplayCharacter(EnteredCharacter::Character_Comma);
 
@@ -714,11 +722,11 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 
 	//wcout << "Pressed handle text: " << GetWindowTextToWstring(HANDLE_CURRENTCONTROL) << " - Current handle text: " << GetWindowTextToWstring(HANDLE_BUFFER) << endl;
 
-	cout << "mouseButtonPressed! - " << mouseButtonPressed << endl;
-	cout << "withinControl! - " << withinControl << endl;
-	cout << "keyboardPressed! - " << keyboardPressed << endl;
-	cout << "keyboardInput! - " << keyboardInput << endl;
-	cout << endl;
+	//cout << "mouseButtonPressed! - " << mouseButtonPressed << endl;
+	//cout << "withinControl! - " << withinControl << endl;
+	//cout << "keyboardPressed! - " << keyboardPressed << endl;
+	//cout << "keyboardInput! - " << keyboardInput << endl;
+	//cout << endl;
 
 	hDC = _passedControlStruct->hDC;
 	GetClientRect(_passedControlStruct->hwndItem, &rc);
@@ -747,7 +755,15 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 	hTmp = (HFONT)SelectObject(hDC, hFont);
 	SetBkMode(hDC, TRANSPARENT);
 
-	DrawText(hDC, _controlText.c_str(), -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	if (_passedControlStruct->CtlID == ID_STATIC_NUMBER_FIELD)
+	{
+		TextOutW(hDC, rc.right - 20, (rc.bottom - rc.top) / 2, _controlText.c_str(), lstrlenW(_controlText.c_str()));
+	}
+	else
+	{
+		DrawText(hDC, _controlText.c_str(), -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	}
+	
 	DeleteObject(SelectObject(hDC, hTmp));
 }
 
@@ -785,35 +801,35 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 	{
 		case EnteredCharacter::Action_DeleteDisplayed:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
 			}
 		}
 		break;
 		case EnteredCharacter::Action_DeleteEverything:
 		{
 			// TODO: Delete all number and calculating variables
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
 			}
 		}
 		break;
 		case EnteredCharacter::Action_DeleteCharacter:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD).length() > 1)
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD).length() > 1)
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD);
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD);
 				size_t stringLength = currentNumber.length();
 
 				currentNumber = currentNumber.substr(0, stringLength - 1);
 
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
 			}
 			else
 			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
 			}
 		}
 		break;
@@ -825,127 +841,127 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Zero:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"0";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"0";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
 			}
 		}
 		break;
 		case EnteredCharacter::Number_One:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"1";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"1";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
 			}
 			else
 			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"1");
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"1");
 			}
 		}
 		break;
 		case EnteredCharacter::Number_Two:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"2";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"2";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
 			}
 			else
 			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"2");
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"2");
 			}
 		}
 		break;
 		case EnteredCharacter::Number_Three:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"3";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"3";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
 			}
 			else
 			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"3");
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"3");
 			}
 		}
 		break;
 		case EnteredCharacter::Number_Four:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"4";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"4";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
 			}
 			else
 			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"4");
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"4");
 			}
 		}
 		break;
 		case EnteredCharacter::Number_Five:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"5";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"5";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
 			}
 			else
 			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"5");
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"5");
 			}
 		}
 		break;
 		case EnteredCharacter::Number_Six:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"6";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"6";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
 			}
 			else
 			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"6");
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"6");
 			}
 		}
 		break;
 		case EnteredCharacter::Number_Seven:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"7";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"7";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
 			}
 			else
 			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"7");
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"7");
 			}
 		}
 		break;
 		case EnteredCharacter::Number_Eight:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"8";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"8";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
 			}
 			else
 			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"8");
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"8");
 			}
 		}
 		break;
 		case EnteredCharacter::Number_Nine:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L"9";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"9";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
 			}
 			else
 			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"9");
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"9");
 			}
 		}
 		break;
@@ -955,14 +971,14 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Character_Comma:
 		{
-			if (GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) != L"0")
+			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD) + L",";
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L",";
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
 			}
 			else
 			{
-				SendMessage(CONTROL_BUTTON_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0,");
+				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0,");
 			}
 		}
 		break;
@@ -1055,7 +1071,7 @@ DWORD WINAPI Events::ResetButtonState(__in LPVOID lpParameter)
 {
 	using namespace std;
 
-	cout << "----------------------->loop started: " << endl;
+	//cout << "----------------------->loop started: " << endl;
 
 	chrono::time_point<chrono::system_clock> start, end;
 	start = chrono::system_clock::now();
@@ -1084,13 +1100,13 @@ DWORD WINAPI Events::ResetButtonState(__in LPVOID lpParameter)
 		keyboardInput = false;
 	}
 
-	cout << "mouseButtonPressed! - " << mouseButtonPressed << endl;
-	cout << "withinControl! - " << withinControl << endl;
-	cout << "keyboardPressed! - " << keyboardPressed << endl;
-	cout << "keyboardInput! - " << keyboardInput << endl;
-	cout << endl;
+	//cout << "mouseButtonPressed! - " << mouseButtonPressed << endl;
+	//cout << "withinControl! - " << withinControl << endl;
+	//cout << "keyboardPressed! - " << keyboardPressed << endl;
+	//cout << "keyboardInput! - " << keyboardInput << endl;
+	//cout << endl;
 
-	cout << "----------------------->loop ended: " << endl;
+	//cout << "----------------------->loop ended: " << endl;
 
 	return 0;
 }
@@ -1109,7 +1125,7 @@ LRESULT CALLBACK Events::CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wP
 			mouseButtonPressed = true;
 			withinControl = true;
 
-			std::wstring currentNumber = GetWindowTextToWstring(CONTROL_BUTTON_NUMBER_FIELD);
+			std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD);
 			std::wstring buttonNumber = currentNumber + GetWindowTextToWstring(HANDLE_CURRENTCONTROL);
 
 			switch (GetDlgCtrlID((HWND)HANDLE_CURRENTCONTROL))
@@ -1268,7 +1284,7 @@ LRESULT CALLBACK Events::CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wP
 
 				switch (GetDlgCtrlID((HWND)HANDLE_BUFFER))
 				{
-					case ID_BUTTON_NUMBER_FIELD:
+					case ID_STATIC_NUMBER_FIELD:
 					{
 					}
 					break;

@@ -16,43 +16,42 @@
 #define VK_KEY_8								0x38
 #define VK_KEY_9								0x39
 
+
 // -------- Edit IDs --------
 
 
+// -------- Static IDs --------
+#define ID_STATIC_NUMBER_FIELD					1201
+
+
 // -------- Button IDs --------
-#define ID_BUTTON_NUMBER_FIELD					1200
+#define ID_BUTTON_ACTION_DELETEDISPLAYED		1301
+#define ID_BUTTON_ACTION_DELETEEVERYTHING		1302
+#define ID_BUTTON_ACTION_DELETECHARACTER		1303
+#define ID_BUTTON_ACTION_DIVISION				1304
 
-#define ID_BUTTON_ACTION_DELETEDISPLAYED		1201
-#define ID_BUTTON_ACTION_DELETEEVERYTHING		1202
-#define ID_BUTTON_ACTION_DELETECHARACTER		1203
-#define ID_BUTTON_ACTION_DIVISION				1204
+#define ID_BUTTON_NUMBER_SEVEN					1305
+#define ID_BUTTON_NUMBER_EIGHT					1306
+#define ID_BUTTON_NUMBER_NINE					1307
+#define ID_BUTTON_ACTION_MULTIPLICATION			1308
 
-#define ID_BUTTON_NUMBER_SEVEN					1205
-#define ID_BUTTON_NUMBER_EIGHT					1206
-#define ID_BUTTON_NUMBER_NINE					1207
-#define ID_BUTTON_ACTION_MULTIPLICATION			1208
+#define ID_BUTTON_NUMBER_FOUR					1309
+#define ID_BUTTON_NUMBER_FIVE					1310
+#define ID_BUTTON_NUMBER_SIX					1311
+#define ID_BUTTON_ACTION_SUBTRACTION			1312
 
-#define ID_BUTTON_NUMBER_FOUR					1209
-#define ID_BUTTON_NUMBER_FIVE					1210
-#define ID_BUTTON_NUMBER_SIX					1211
-#define ID_BUTTON_ACTION_SUBTRACTION			1212
+#define ID_BUTTON_NUMBER_ONE					1313
+#define ID_BUTTON_NUMBER_TWO					1314
+#define ID_BUTTON_NUMBER_THREE					1315
+#define ID_BUTTON_ACTION_ADDITION				1316
 
-#define ID_BUTTON_NUMBER_ONE					1213
-#define ID_BUTTON_NUMBER_TWO					1214
-#define ID_BUTTON_NUMBER_THREE					1215
-#define ID_BUTTON_ACTION_ADDITION				1216
-
-#define ID_BUTTON_CHARACTER_PLUSMINUS						1217
-#define ID_BUTTON_NUMBER_ZERO					1218
-#define ID_BUTTON_CHARACTER_COMMA							1219
-#define ID_BUTTON_ACTION_RESULT					1220
+#define ID_BUTTON_CHARACTER_PLUSMINUS			1317
+#define ID_BUTTON_NUMBER_ZERO					1318
+#define ID_BUTTON_CHARACTER_COMMA				1319
+#define ID_BUTTON_ACTION_RESULT					1320
 
 
 // -------- ComboBox IDs --------
-
-
-
-// -------- Static IDs --------
 
 
 // -------- CheckBox IDs --------
@@ -181,9 +180,11 @@ private:
 	// -------- Edit handles --------
 
 
-	// -------- Button handles --------
-	static HWND CONTROL_BUTTON_NUMBER_FIELD;
+	// -------- Static handles --------
+	static HWND CONTROL_STATIC_NUMBER_FIELD;
 
+
+	// -------- Button handles --------
 	static HWND CONTROL_BUTTON_ACTION_DELETEDISPLAYED;
 	static HWND CONTROL_BUTTON_ACTION_DELETEEVERYTHING;
 	static HWND CONTROL_BUTTON_ACTION_DELETECHARACTER;
@@ -211,9 +212,6 @@ private:
 
 
 	// -------- ComboBox handles --------
-
-
-	// -------- Static handles --------
 	
 
 	// -------- CheckBox handles --------
