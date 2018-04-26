@@ -150,6 +150,7 @@ private:
 	// Function declarations
 	static std::wstring				GetWindowTextToWstring(HWND _passedHandle);
 	static std::wstring				GetClassNameToWstring(HWND _passedHandle);
+	static int						ConcatenateInteger(int _passedNumberOne, int _passedNumberTwo);
 
 	static void						DisplayCharacter(EnteredCharacter _passedCharacter);
 	static void						HandleButtonAction(InputAction _passedAction, HWND _passedNewCurrentControl);
@@ -166,6 +167,7 @@ private:
 	static bool keyboardPressed;
 	static bool withinControl;
 	static bool keyboardInput;
+	static bool updateDisplayedContent;
 
 	static int displayedNumber;
 	static int additionalNumber;

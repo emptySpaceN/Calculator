@@ -12,6 +12,7 @@ bool Events::mouseButtonPressed = false;
 bool Events::keyboardPressed = false;
 bool Events::withinControl = false;
 bool Events::keyboardInput = false;
+bool Events::updateDisplayedContent = false;
 
 int Events::displayedNumber = 0;
 int Events::additionalNumber = 0;
@@ -231,8 +232,8 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 		buttonLocationColumnFour, buttonLocationRowFive, buttonWidth, buttonHeight,				// x, y, w, h
 		Wea->hWnd, (HMENU)ID_BUTTON_ACTION_RESULT,
 		(HINSTANCE)GetWindowLongPtr(Wea->hWnd, GWLP_HINSTANCE), NULL);
-	
-	
+
+
 	// -------- ComboBox handles --------
 
 
@@ -302,7 +303,7 @@ LRESULT Events::MainWindowProc_OnPaint(lpWndEventArgs Wea)
 	DeleteObject(SelectObject(hDC, hTmp));
 
 	EndPaint(Wea->hWnd, &ps);
-	
+
 	return 0;
 }
 
@@ -338,8 +339,8 @@ LRESULT Events::MainWindowProc_OnDawControl(lpWndEventArgs Wea)
 	{
 		case ID_STATIC_NUMBER_FIELD:
 		{
-			cout << "Field!" << endl;
-			HandleItemDrawing(currentControlStruct, L"0");
+			displayedNumber = 123123123;
+			HandleItemDrawing(currentControlStruct, to_wstring(displayedNumber));
 		}
 		case ID_BUTTON_ACTION_DELETEDISPLAYED:
 		{
@@ -486,7 +487,7 @@ LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 {
 	using namespace std;
 
-	cout << Wea->wParam << endl;
+	//cout << Wea->wParam << endl;
 
 	switch (Wea->wParam)
 	{
@@ -497,7 +498,7 @@ LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 			if (!keyboardPressed)
 			{
 				//system("cls");
-				cout << "key down<----------------------------------------------: " << endl;
+				//cout << "key down<----------------------------------------------: " << endl;
 				//HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_DELETEDISPLAYED);
 			}
 		}
@@ -660,7 +661,7 @@ LRESULT Events::MainWindowProc_OnKeyUp(lpWndEventArgs Wea)
 	using namespace std;
 
 	keyboardPressed = false;
-	cout << "key up<----------------------------------------------: " << endl;
+	//cout << "key up<----------------------------------------------: " << endl;
 
 	return 0;
 }
@@ -731,7 +732,7 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 	hDC = _passedControlStruct->hDC;
 	GetClientRect(_passedControlStruct->hwndItem, &rc);
 
-	if ((mouseButtonPressed && withinControl && (HANDLE_CURRENTCONTROL == HANDLE_BUFFER)) || keyboardInput)
+	if (((mouseButtonPressed && withinControl && (HANDLE_CURRENTCONTROL == HANDLE_BUFFER)) && !updateDisplayedContent) || (keyboardInput && !updateDisplayedContent))
 	{
 
 		hBrush = CreateSolidBrush(RGB(5, 221, 221));
@@ -755,15 +756,34 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 	hTmp = (HFONT)SelectObject(hDC, hFont);
 	SetBkMode(hDC, TRANSPARENT);
 
-	if (_passedControlStruct->CtlID == ID_STATIC_NUMBER_FIELD)
+	cout << "in the custom draw event - ID: " << _passedControlStruct->CtlID << endl;
+	
+	if (!updateDisplayedContent && _passedControlStruct->CtlID != ID_STATIC_NUMBER_FIELD)
 	{
-		TextOutW(hDC, rc.right - 20, (rc.bottom - rc.top) / 2, _controlText.c_str(), lstrlenW(_controlText.c_str()));
+		// Draw the current cntrols text
+		DrawText(hDC, _controlText.c_str(), -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 	}
 	else
 	{
-		DrawText(hDC, _controlText.c_str(), -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+		// If true, update the displayed content
+		SIZE textSize;
+		int textPositionX = 0;
+		int textPositionY = 0;
+		wstring newDisplayedContent = to_wstring(displayedNumber);
+
+		GetTextExtentPoint32W(hDC, newDisplayedContent.c_str(), lstrlenW(newDisplayedContent.c_str()), &textSize);
+
+		textPositionX = rc.right - textSize.cx - 20;
+		textPositionY = ((rc.bottom - rc.top) / 2) - (textSize.cy / 2);
+
+		TextOutW(hDC, textPositionX, textPositionY, newDisplayedContent.c_str(), lstrlenW(newDisplayedContent.c_str()));
+
+		//wcout << "x: " << textSize.cx << " - y: " << textSize.cy << " - Height: " << rc.bottom - rc.top << " string: " << _controlText << endl;
+
+		updateDisplayedContent = false;
 	}
-	
+
+	//Rectangle(hDC, rc.left, rc.top, rc.right, rc.bottom);
 	DeleteObject(SelectObject(hDC, hTmp));
 }
 
@@ -794,33 +814,63 @@ std::wstring Events::GetClassNameToWstring(HWND _passedHandle)
 	return stxt;
 }
 
+int Events::ConcatenateInteger(int _passedNumberOne, int _passedNumberTwo)
+{
+	using namespace std;
+
+	int concatenatedNumber;
+	ostringstream oss;
+	
+
+	oss << _passedNumberOne << _passedNumberTwo;
+
+	istringstream iss(oss.str());
+	
+	iss >> concatenatedNumber;
+
+	cout << "Number one: " << concatenatedNumber << " Number two: " << _passedNumberTwo << endl;
+	
+	return concatenatedNumber;
+}
+
 
 void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 {
+	using namespace std;
+
 	switch (_passedCharacter)
 	{
 		case EnteredCharacter::Action_DeleteDisplayed:
 		{
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			if (displayedNumber != 0)
 			{
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
+				updateDisplayedContent = true;
+				displayedNumber = 0;
+
+				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+				cout << "Delete displayed - bool: " << updateDisplayedContent << endl;
+				//SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
 			}
 		}
 		break;
 		case EnteredCharacter::Action_DeleteEverything:
 		{
 			// TODO: Delete all number and calculating variables
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			if (displayedNumber != 0)
 			{
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
+				updateDisplayedContent = true;
+				displayedNumber = 0;
+				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+				cout << "Delete everything - bool: " << updateDisplayedContent << endl;
+				//SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
 			}
 		}
 		break;
 		case EnteredCharacter::Action_DeleteCharacter:
 		{
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD).length() > 1)
+			if (displayedNumber >= 9)
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD);
+				std::wstring currentNumber = to_wstring(displayedNumber);
 				size_t stringLength = currentNumber.length();
 
 				currentNumber = currentNumber.substr(0, stringLength - 1);
@@ -850,14 +900,23 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_One:
 		{
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			if (displayedNumber != 0)
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"1";
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				updateDisplayedContent = true;
+				displayedNumber = ConcatenateInteger(displayedNumber, 1);
+
+				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+				//SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				cout << "one uneven Displayed: " << displayedNumber << " - bool: " << updateDisplayedContent << endl;
 			}
 			else
 			{
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"1");
+				
+				displayedNumber = 1;
+				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+				
+			//SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"1");
+				cout << "one even " << displayedNumber << endl;
 			}
 		}
 		break;
@@ -1076,8 +1135,8 @@ DWORD WINAPI Events::ResetButtonState(__in LPVOID lpParameter)
 	chrono::time_point<chrono::system_clock> start, end;
 	start = chrono::system_clock::now();
 
-	int elapsed_seconds = 0;
-
+	long long elapsed_seconds = 0;
+	
 	while (keyboardPressed)
 	{
 		end = chrono::system_clock::now();
