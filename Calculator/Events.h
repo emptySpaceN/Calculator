@@ -151,6 +151,7 @@ private:
 	static std::wstring				GetWindowTextToWstring(HWND _passedHandle);
 	static std::wstring				GetClassNameToWstring(HWND _passedHandle);
 	static int						ConcatenateInteger(int _passedNumberOne, int _passedNumberTwo);
+	static int						RemoveDigitFromInteger(int _passedNumber);
 
 	static void						DisplayCharacter(EnteredCharacter _passedCharacter);
 	static void						HandleButtonAction(InputAction _passedAction, HWND _passedNewCurrentControl);

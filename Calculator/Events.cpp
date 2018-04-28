@@ -339,7 +339,6 @@ LRESULT Events::MainWindowProc_OnDawControl(lpWndEventArgs Wea)
 	{
 		case ID_STATIC_NUMBER_FIELD:
 		{
-			displayedNumber = 123123123;
 			HandleItemDrawing(currentControlStruct, to_wstring(displayedNumber));
 		}
 		case ID_BUTTON_ACTION_DELETEDISPLAYED:
@@ -820,16 +819,32 @@ int Events::ConcatenateInteger(int _passedNumberOne, int _passedNumberTwo)
 
 	int concatenatedNumber;
 	ostringstream oss;
-	
+	istringstream iss;
 
 	oss << _passedNumberOne << _passedNumberTwo;
 
-	istringstream iss(oss.str());
+	iss.str(oss.str());
+
+	iss >> concatenatedNumber;
 	
+	return concatenatedNumber;
+}
+
+
+int Events::RemoveDigitFromInteger(int _passedNumber)
+{
+	using namespace std;
+
+	int concatenatedNumber = 0;
+	ostringstream oss;
+	istringstream iss;
+
+	oss << _passedNumber;
+	iss.str(oss.str().substr(0, oss.str().length() - 1));
 	iss >> concatenatedNumber;
 
-	cout << "Number one: " << concatenatedNumber << " Number two: " << _passedNumberTwo << endl;
-	
+	cout << concatenatedNumber << endl;
+
 	return concatenatedNumber;
 }
 
@@ -848,8 +863,6 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 				displayedNumber = 0;
 
 				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-				cout << "Delete displayed - bool: " << updateDisplayedContent << endl;
-				//SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
 			}
 		}
 		break;
@@ -860,27 +873,26 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 			{
 				updateDisplayedContent = true;
 				displayedNumber = 0;
+				additionalNumber = 0;
+				currentResult = 0;
+
 				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-				cout << "Delete everything - bool: " << updateDisplayedContent << endl;
-				//SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
 			}
 		}
 		break;
 		case EnteredCharacter::Action_DeleteCharacter:
 		{
-			if (displayedNumber >= 9)
+			if (displayedNumber >= 10)
 			{
-				std::wstring currentNumber = to_wstring(displayedNumber);
-				size_t stringLength = currentNumber.length();
-
-				currentNumber = currentNumber.substr(0, stringLength - 1);
-
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				displayedNumber = RemoveDigitFromInteger(displayedNumber);
 			}
 			else
 			{
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0");
+				displayedNumber = 0;
+
 			}
+
+			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		break;
 		case EnteredCharacter::Action_Disision:
@@ -891,10 +903,12 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Zero:
 		{
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			if (displayedNumber != 0)
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"0";
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				updateDisplayedContent = true;
+				displayedNumber = ConcatenateInteger(displayedNumber, 0);
+
+				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 			}
 		}
 		break;
@@ -904,124 +918,133 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 			{
 				updateDisplayedContent = true;
 				displayedNumber = ConcatenateInteger(displayedNumber, 1);
-
-				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-				//SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-				cout << "one uneven Displayed: " << displayedNumber << " - bool: " << updateDisplayedContent << endl;
 			}
 			else
 			{
-				
 				displayedNumber = 1;
-				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-				
-			//SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"1");
-				cout << "one even " << displayedNumber << endl;
 			}
+
+			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		break;
 		case EnteredCharacter::Number_Two:
 		{
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			if (displayedNumber != 0)
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"2";
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				updateDisplayedContent = true;
+				displayedNumber = ConcatenateInteger(displayedNumber, 2);
 			}
 			else
 			{
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"2");
+				displayedNumber = 2;
 			}
+
+			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		break;
 		case EnteredCharacter::Number_Three:
 		{
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			if (displayedNumber != 0)
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"3";
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				updateDisplayedContent = true;
+				displayedNumber = ConcatenateInteger(displayedNumber, 3);
 			}
 			else
 			{
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"3");
+				displayedNumber = 3;
 			}
+
+			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		break;
 		case EnteredCharacter::Number_Four:
 		{
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			if (displayedNumber != 0)
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"4";
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				updateDisplayedContent = true;
+				displayedNumber = ConcatenateInteger(displayedNumber, 4);
 			}
 			else
 			{
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"4");
+				displayedNumber = 4;
 			}
+
+			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		break;
 		case EnteredCharacter::Number_Five:
 		{
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			if (displayedNumber != 0)
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"5";
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				updateDisplayedContent = true;
+				displayedNumber = ConcatenateInteger(displayedNumber, 5);
 			}
 			else
 			{
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"5");
+				displayedNumber = 5;
 			}
+
+			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		break;
 		case EnteredCharacter::Number_Six:
 		{
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			if (displayedNumber != 0)
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"6";
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				updateDisplayedContent = true;
+				displayedNumber = ConcatenateInteger(displayedNumber, 6);
 			}
 			else
 			{
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"6");
+				displayedNumber = 6;
 			}
+
+			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		break;
 		case EnteredCharacter::Number_Seven:
 		{
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			if (displayedNumber != 0)
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"7";
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				updateDisplayedContent = true;
+				displayedNumber = ConcatenateInteger(displayedNumber, 7);
 			}
 			else
 			{
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"7");
+				displayedNumber = 7;
 			}
+
+			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		break;
 		case EnteredCharacter::Number_Eight:
 		{
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			if (displayedNumber != 0)
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"8";
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				updateDisplayedContent = true;
+				displayedNumber = ConcatenateInteger(displayedNumber, 8);
 			}
 			else
 			{
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"8");
+				displayedNumber = 8;
 			}
+
+			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		break;
 		case EnteredCharacter::Number_Nine:
 		{
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			if (displayedNumber != 0)
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L"9";
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
+				updateDisplayedContent = true;
+				displayedNumber = ConcatenateInteger(displayedNumber, 9);
 			}
 			else
 			{
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"9");
+				displayedNumber = 9;
 			}
+
+			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		break;
 		case EnteredCharacter::Character_PlusMinus:
