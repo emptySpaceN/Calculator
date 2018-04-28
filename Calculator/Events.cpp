@@ -14,9 +14,9 @@ bool Events::withinControl = false;
 bool Events::keyboardInput = false;
 bool Events::updateDisplayedContent = false;
 
-int Events::displayedNumber = 0;
-int Events::additionalNumber = 0;
-int Events::currentResult = 0;
+double Events::displayedNumber = 0;
+double Events::additionalNumber = 0;
+double Events::currentResult = 0;
 
 
 // -------- Miscellaneous handles --------
@@ -755,8 +755,8 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 	hTmp = (HFONT)SelectObject(hDC, hFont);
 	SetBkMode(hDC, TRANSPARENT);
 
-	cout << "in the custom draw event - ID: " << _passedControlStruct->CtlID << endl;
-	
+	//cout << "in the custom draw event - ID: " << _passedControlStruct->CtlID << endl;
+
 	if (!updateDisplayedContent && _passedControlStruct->CtlID != ID_STATIC_NUMBER_FIELD)
 	{
 		// Draw the current cntrols text
@@ -768,7 +768,58 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 		SIZE textSize;
 		int textPositionX = 0;
 		int textPositionY = 0;
-		wstring newDisplayedContent = to_wstring(displayedNumber);
+
+		wstring bufferString = to_wstring(displayedNumber);
+		wstring newDisplayedContent = bufferString;
+		//system("cls");
+		if ((newDisplayedContent.length() / 3) > 0)
+		{
+			if ((newDisplayedContent.length() % 3) > 0 || newDisplayedContent.length() >= 6)
+			{
+				try
+				{
+					int occurrences = newDisplayedContent.length();
+					for (int i = 1; i <= occurrences / 3; i++)
+					{
+						//if (newDisplayedContent.length() <= 4)
+						//{
+						//cout << "Occurrences: " << occurrences / 3 << " - Length: " << newDisplayedContent.length() << endl;
+						if (newDisplayedContent.find(L".") == wstring::npos)
+						{
+							//cout << "Loop: " << i << endl;
+							//cout << "insert at position: " << newDisplayedContent.length() - (i * 3) << endl;
+							//}
+							//else
+							//{
+							//	cout << "insert at position: " << (newDisplayedContent.length() - (i * 3)) + 1 << endl;
+							//}
+
+							newDisplayedContent.insert(newDisplayedContent.length() - (i + 3) + 1, L".");
+
+						}
+						else
+						{
+							int first = newDisplayedContent.find_first_of(L".") - 3;
+
+							if (first != 0)
+							{
+								//cout << "Position to enter: " << first << endl;
+
+								newDisplayedContent.insert(first, L".");
+							}
+						}
+					}
+				}
+				catch (const std::exception&)
+				{
+
+				}
+					
+				
+				
+
+			}
+		}
 
 		GetTextExtentPoint32W(hDC, newDisplayedContent.c_str(), lstrlenW(newDisplayedContent.c_str()), &textSize);
 
@@ -813,11 +864,11 @@ std::wstring Events::GetClassNameToWstring(HWND _passedHandle)
 	return stxt;
 }
 
-int Events::ConcatenateInteger(int _passedNumberOne, int _passedNumberTwo)
+double Events::ConcatenateInteger(double _passedNumberOne, double _passedNumberTwo)
 {
 	using namespace std;
 
-	int concatenatedNumber;
+	double concatenatedNumber;
 	ostringstream oss;
 	istringstream iss;
 
@@ -826,16 +877,16 @@ int Events::ConcatenateInteger(int _passedNumberOne, int _passedNumberTwo)
 	iss.str(oss.str());
 
 	iss >> concatenatedNumber;
-	
+
 	return concatenatedNumber;
 }
 
 
-int Events::RemoveDigitFromInteger(int _passedNumber)
+double Events::RemoveDigitFromInteger(double _passedNumber)
 {
 	using namespace std;
 
-	int concatenatedNumber = 0;
+	double concatenatedNumber = 0;
 	ostringstream oss;
 	istringstream iss;
 
@@ -1113,7 +1164,7 @@ void Events::HandleButtonAction(InputAction _passedAction, HWND _passedNewCurren
 }
 
 
-void Events::CalculateResult(int _passedCurrentResult, int _passedAdditionNumber, CalculationOperator _passedOperator)
+void Events::CalculateResult(double _passedCurrentResult, double _passedAdditionNumber, CalculationOperator _passedOperator)
 {
 	switch (_passedOperator)
 	{
@@ -1159,7 +1210,7 @@ DWORD WINAPI Events::ResetButtonState(__in LPVOID lpParameter)
 	start = chrono::system_clock::now();
 
 	long long elapsed_seconds = 0;
-	
+
 	while (keyboardPressed)
 	{
 		end = chrono::system_clock::now();
