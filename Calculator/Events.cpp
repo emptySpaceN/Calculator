@@ -16,9 +16,9 @@ bool Events::updateDisplayedContent = false;
 bool Events::commaSet = false;
 
 short Events::commaPosition = 0;
-long double Events::displayedNumber = 0;
-long double Events::additionalNumber = 0;
-long double Events::currentResult = 0;
+__int64 Events::displayedNumber = 0;
+__int64 Events::additionalNumber = 0;
+__int64 Events::currentResult = 0;
 
 
 // -------- Miscellaneous handles --------
@@ -769,7 +769,7 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 		int textPositionX = 0;
 		int textPositionY = 0;
 
-		// Convert long double to a wstring
+		// Convert __int64 to a wstring
 		wstringstream wss;
 		wss << displayedNumber;
 
@@ -850,11 +850,11 @@ std::wstring Events::GetClassNameToWstring(HWND _passedHandle)
 	return stxt;
 }
 
-long double Events::ConcatenateInteger(long double _passedNumberOne, long double _passedNumberTwo)
+__int64 Events::ConcatenateInteger(__int64 _passedNumberOne, __int64 _passedNumberTwo)
 {
 	using namespace std;
 	cout << _passedNumberOne << " - " << _passedNumberTwo << endl;
-	long double concatenatedNumber;
+	__int64 concatenatedNumber;
 	ostringstream oss;
 	istringstream iss;
 
@@ -868,11 +868,11 @@ long double Events::ConcatenateInteger(long double _passedNumberOne, long double
 }
 
 
-long double Events::RemoveDigitFromInteger(long double _passedNumber)
+__int64 Events::RemoveDigitFromInteger(__int64 _passedNumber)
 {
 	using namespace std;
 
-	long double concatenatedNumber = 0;
+	__int64 concatenatedNumber = 0;
 	ostringstream oss;
 	istringstream iss;
 
@@ -886,7 +886,7 @@ long double Events::RemoveDigitFromInteger(long double _passedNumber)
 }
 
 
-long double Events::GetDigitLength(long double _passedNumber)
+__int64 Events::GetDigitLength(__int64 _passedNumber)
 {
 	using namespace std;
 	wstringstream numberStream;
@@ -894,7 +894,7 @@ long double Events::GetDigitLength(long double _passedNumber)
 
 	int test = numberStream.tellp();
 
-	long double digitHolder = _passedNumber;
+	__int64 digitHolder = _passedNumber;
 	short digitCounter = 0;
 
 	while (digitHolder > 0) { digitHolder = digitHolder / 10; digitCounter += 1; }
@@ -1191,7 +1191,7 @@ void Events::HandleButtonAction(InputAction _passedAction, HWND _passedNewCurren
 }
 
 
-void Events::CalculateResult(long double _passedCurrentResult, long double _passedAdditionNumber, CalculationOperator _passedOperator)
+void Events::CalculateResult(__int64 _passedCurrentResult, __int64 _passedAdditionNumber, CalculationOperator _passedOperator)
 {
 	switch (_passedOperator)
 	{

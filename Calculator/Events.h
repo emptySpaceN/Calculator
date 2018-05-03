@@ -150,13 +150,13 @@ private:
 	// Function declarations
 	static std::wstring				GetWindowTextToWstring(HWND _passedHandle);
 	static std::wstring				GetClassNameToWstring(HWND _passedHandle);
-	static long double					ConcatenateInteger(long double _passedNumberOne, long double _passedNumberTwo);
-	static long double					RemoveDigitFromInteger(long double _passedNumber);
-	static long double					GetDigitLength(long double _passedNumber);
+	static __int64					ConcatenateInteger(__int64 _passedNumberOne, __int64 _passedNumberTwo);
+	static __int64					RemoveDigitFromInteger(__int64 _passedNumber);
+	static __int64					GetDigitLength(__int64 _passedNumber);
 
 	static void						DisplayCharacter(EnteredCharacter _passedCharacter);
 	static void						HandleButtonAction(InputAction _passedAction, HWND _passedNewCurrentControl);
-	static void						CalculateResult(long double _passedCurrentResult, long double _passedAdditionNumber, CalculationOperator _passedOperator);
+	static void						CalculateResult(__int64 _passedCurrentResult, __int64 _passedAdditionNumber, CalculationOperator _passedOperator);
 
 	static DWORD WINAPI				ResetButtonState(__in LPVOID lpParameter);
 	static LRESULT CALLBACK			CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -174,9 +174,9 @@ private:
 
 
 	static short commaPosition;
-	static long double displayedNumber;
-	static long double additionalNumber;
-	static long double currentResult;
+	static __int64 displayedNumber;
+	static __int64 additionalNumber;
+	static __int64 currentResult;
 
 
 	// -------- Miscellaneous handles --------
