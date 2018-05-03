@@ -13,10 +13,12 @@ bool Events::keyboardPressed = false;
 bool Events::withinControl = false;
 bool Events::keyboardInput = false;
 bool Events::updateDisplayedContent = false;
+bool Events::commaSet = false;
 
-double Events::displayedNumber = 0;
-double Events::additionalNumber = 0;
-double Events::currentResult = 0;
+short Events::commaPosition = 0;
+long double Events::displayedNumber = 0;
+long double Events::additionalNumber = 0;
+long double Events::currentResult = 0;
 
 
 // -------- Miscellaneous handles --------
@@ -293,14 +295,14 @@ LRESULT Events::MainWindowProc_OnPaint(lpWndEventArgs Wea)
 	hBrush = CreateSolidBrush(RGB(182, 182, 182));
 	FillRect(hDC, &rc, hBrush);
 	DeleteObject(hBrush);
-	SetTextColor(hDC, RGB(0, 255, 255));
-	hFont = CreateFontW(80, 0, 0, 0, FW_BOLD, 0, 0, 0, 0, 0, 0, 2, 0, L"SYSTEM_FIXED_FONT");
-	hTmp = (HFONT)SelectObject(hDC, hFont);
-	SetBkMode(hDC, TRANSPARENT);
-	std::wstring  szUeberschrift = L"Test";
+	//SetTextColor(hDC, RGB(0, 255, 255));
+	//hFont = CreateFontW(80, 0, 0, 0, FW_BOLD, 0, 0, 0, 0, 0, 0, 2, 0, L"SYSTEM_FIXED_FONT");
+	//hTmp = (HFONT)SelectObject(hDC, hFont);
+	//SetBkMode(hDC, TRANSPARENT);
+	//std::wstring  szUeberschrift = L"Test";
 	//DrawText(hDC, szUeberschrift.c_str(), lstrlenW(szUeberschrift.c_str()), &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-	TextOutW(hDC, 1, 1, szUeberschrift.c_str(), lstrlenW(szUeberschrift.c_str()));
-	DeleteObject(SelectObject(hDC, hTmp));
+	//TextOutW(hDC, 1, 1, szUeberschrift.c_str(), lstrlenW(szUeberschrift.c_str()));
+	//DeleteObject(SelectObject(hDC, hTmp));
 
 	EndPaint(Wea->hWnd, &ps);
 
@@ -498,7 +500,7 @@ LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 			{
 				//system("cls");
 				//cout << "key down<----------------------------------------------: " << endl;
-				//HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_DELETEDISPLAYED);
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_DELETEDISPLAYED);
 			}
 		}
 		break;
@@ -731,31 +733,29 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 	hDC = _passedControlStruct->hDC;
 	GetClientRect(_passedControlStruct->hwndItem, &rc);
 
-	if (((mouseButtonPressed && withinControl && (HANDLE_CURRENTCONTROL == HANDLE_BUFFER)) && !updateDisplayedContent) || (keyboardInput && !updateDisplayedContent))
+	if ((mouseButtonPressed && withinControl && !updateDisplayedContent && (_passedControlStruct->CtlID != ID_STATIC_NUMBER_FIELD)) || 
+		(keyboardInput && !updateDisplayedContent && (_passedControlStruct->CtlID != ID_STATIC_NUMBER_FIELD)))
 	{
 
 		hBrush = CreateSolidBrush(RGB(5, 221, 221));
 
+		cout << _passedControlStruct->CtlID << endl;
+
 		if (keyboardPressed) { keyboardInput = false; }
-		//cout << "keyboardInput!" << keyboardInput << endl;
 	}
 	else
 	{
 		hBrush = CreateSolidBrush(RGB(255, 255, 255));
 
 		if (keyboardPressed) { keyboardInput = true; }
-
-		//cout << "keyboardInput!" << keyboardInput << endl;
 	}
 
 	FillRect(hDC, &rc, hBrush);
 	DeleteObject(hBrush);
 	SetTextColor(hDC, RGB(0, 0, 0));
-	hFont = CreateFontW(25, 0, 0, 0, FW_BOLD, 0, 0, 0, 0, 0, 0, 2, 0, L"SYSTEM_FIXED_FONT");
+	hFont = CreateFontW(21, 0, 0, 0, FW_BOLD, 0, 0, 0, 0, 0, 0, 2, 0, L"SYSTEM_FIXED_FONT");
 	hTmp = (HFONT)SelectObject(hDC, hFont);
 	SetBkMode(hDC, TRANSPARENT);
-
-	//cout << "in the custom draw event - ID: " << _passedControlStruct->CtlID << endl;
 
 	if (!updateDisplayedContent && _passedControlStruct->CtlID != ID_STATIC_NUMBER_FIELD)
 	{
@@ -769,9 +769,14 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 		int textPositionX = 0;
 		int textPositionY = 0;
 
-		wstring bufferString = to_wstring(displayedNumber);
+		// Convert long double to a wstring
+		wstringstream wss;
+		wss << displayedNumber;
+
+		wstring bufferString = wss.str();//to_wstring(displayedNumber);
 		wstring newDisplayedContent = bufferString;
-		//system("cls");
+		wcout << bufferString << endl;
+
 		if ((newDisplayedContent.length() / 3) > 0)
 		{
 			if ((newDisplayedContent.length() % 3) > 0 || newDisplayedContent.length() >= 6)
@@ -781,21 +786,9 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 					int occurrences = newDisplayedContent.length();
 					for (int i = 1; i <= occurrences / 3; i++)
 					{
-						//if (newDisplayedContent.length() <= 4)
-						//{
-						//cout << "Occurrences: " << occurrences / 3 << " - Length: " << newDisplayedContent.length() << endl;
 						if (newDisplayedContent.find(L".") == wstring::npos)
 						{
-							//cout << "Loop: " << i << endl;
-							//cout << "insert at position: " << newDisplayedContent.length() - (i * 3) << endl;
-							//}
-							//else
-							//{
-							//	cout << "insert at position: " << (newDisplayedContent.length() - (i * 3)) + 1 << endl;
-							//}
-
 							newDisplayedContent.insert(newDisplayedContent.length() - (i + 3) + 1, L".");
-
 						}
 						else
 						{
@@ -803,8 +796,6 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 
 							if (first != 0)
 							{
-								//cout << "Position to enter: " << first << endl;
-
 								newDisplayedContent.insert(first, L".");
 							}
 						}
@@ -812,12 +803,8 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 				}
 				catch (const std::exception&)
 				{
-
+					// TODO: Add a function to log error in a file.
 				}
-					
-				
-				
-
 			}
 		}
 
@@ -828,12 +815,11 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 
 		TextOutW(hDC, textPositionX, textPositionY, newDisplayedContent.c_str(), lstrlenW(newDisplayedContent.c_str()));
 
-		//wcout << "x: " << textSize.cx << " - y: " << textSize.cy << " - Height: " << rc.bottom - rc.top << " string: " << _controlText << endl;
+
 
 		updateDisplayedContent = false;
 	}
 
-	//Rectangle(hDC, rc.left, rc.top, rc.right, rc.bottom);
 	DeleteObject(SelectObject(hDC, hTmp));
 }
 
@@ -864,11 +850,11 @@ std::wstring Events::GetClassNameToWstring(HWND _passedHandle)
 	return stxt;
 }
 
-double Events::ConcatenateInteger(double _passedNumberOne, double _passedNumberTwo)
+long double Events::ConcatenateInteger(long double _passedNumberOne, long double _passedNumberTwo)
 {
 	using namespace std;
-
-	double concatenatedNumber;
+	cout << _passedNumberOne << " - " << _passedNumberTwo << endl;
+	long double concatenatedNumber;
 	ostringstream oss;
 	istringstream iss;
 
@@ -882,11 +868,11 @@ double Events::ConcatenateInteger(double _passedNumberOne, double _passedNumberT
 }
 
 
-double Events::RemoveDigitFromInteger(double _passedNumber)
+long double Events::RemoveDigitFromInteger(long double _passedNumber)
 {
 	using namespace std;
 
-	double concatenatedNumber = 0;
+	long double concatenatedNumber = 0;
 	ostringstream oss;
 	istringstream iss;
 
@@ -897,6 +883,25 @@ double Events::RemoveDigitFromInteger(double _passedNumber)
 	cout << concatenatedNumber << endl;
 
 	return concatenatedNumber;
+}
+
+
+long double Events::GetDigitLength(long double _passedNumber)
+{
+	using namespace std;
+	wstringstream numberStream;
+	numberStream << _passedNumber;
+
+	int test = numberStream.tellp();
+
+	long double digitHolder = _passedNumber;
+	short digitCounter = 0;
+
+	while (digitHolder > 0) { digitHolder = digitHolder / 10; digitCounter += 1; }
+
+	cout << "digit counter " << test << endl;
+
+	return test;
 }
 
 
@@ -954,6 +959,8 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Zero:
 		{
+			if (GetDigitLength(displayedNumber) >= 16) { break; }
+
 			if (displayedNumber != 0)
 			{
 				updateDisplayedContent = true;
@@ -965,6 +972,8 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_One:
 		{
+			if (GetDigitLength(displayedNumber) >= 16) { break; }
+			cout << "test1" << endl;
 			if (displayedNumber != 0)
 			{
 				updateDisplayedContent = true;
@@ -980,6 +989,8 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Two:
 		{
+			if (GetDigitLength(displayedNumber) >= 16) { break; }
+
 			if (displayedNumber != 0)
 			{
 				updateDisplayedContent = true;
@@ -995,6 +1006,8 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Three:
 		{
+			if (GetDigitLength(displayedNumber) >= 16) { break; }
+
 			if (displayedNumber != 0)
 			{
 				updateDisplayedContent = true;
@@ -1010,6 +1023,8 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Four:
 		{
+			if (GetDigitLength(displayedNumber) >= 16) { break; }
+
 			if (displayedNumber != 0)
 			{
 				updateDisplayedContent = true;
@@ -1025,6 +1040,8 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Five:
 		{
+			if (GetDigitLength(displayedNumber) >= 16) { break; }
+
 			if (displayedNumber != 0)
 			{
 				updateDisplayedContent = true;
@@ -1040,6 +1057,8 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Six:
 		{
+			if (GetDigitLength(displayedNumber) >= 16) { break; }
+
 			if (displayedNumber != 0)
 			{
 				updateDisplayedContent = true;
@@ -1055,6 +1074,8 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Seven:
 		{
+			if (GetDigitLength(displayedNumber) >= 16) { break; }
+
 			if (displayedNumber != 0)
 			{
 				updateDisplayedContent = true;
@@ -1070,6 +1091,8 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Eight:
 		{
+			if (GetDigitLength(displayedNumber) >= 16) { break; }
+
 			if (displayedNumber != 0)
 			{
 				updateDisplayedContent = true;
@@ -1085,6 +1108,8 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Nine:
 		{
+			if (GetDigitLength(displayedNumber) >= 16) { break; }
+
 			if (displayedNumber != 0)
 			{
 				updateDisplayedContent = true;
@@ -1104,14 +1129,16 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Character_Comma:
 		{
-			if (GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) != L"0")
+			if (!commaSet)
 			{
-				std::wstring currentNumber = GetWindowTextToWstring(CONTROL_STATIC_NUMBER_FIELD) + L",";
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)currentNumber.c_str());
-			}
-			else
-			{
-				SendMessage(CONTROL_STATIC_NUMBER_FIELD, WM_SETTEXT, 0, (LPARAM)L"0,");
+				
+
+
+
+
+				commaSet = true;
+				commaPosition = 1;
+				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 			}
 		}
 		break;
@@ -1164,7 +1191,7 @@ void Events::HandleButtonAction(InputAction _passedAction, HWND _passedNewCurren
 }
 
 
-void Events::CalculateResult(double _passedCurrentResult, double _passedAdditionNumber, CalculationOperator _passedOperator)
+void Events::CalculateResult(long double _passedCurrentResult, long double _passedAdditionNumber, CalculationOperator _passedOperator)
 {
 	switch (_passedOperator)
 	{
