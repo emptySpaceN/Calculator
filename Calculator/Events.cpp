@@ -16,6 +16,7 @@ bool Events::updateDisplayedContent = false;
 bool Events::commaSet = false;
 
 short Events::commaPosition = 0;
+short Events::displayedNumberSize = 16;
 __int64 Events::displayedNumber = 0;
 __int64 Events::additionalNumber = 0;
 __int64 Events::currentResult = 0;
@@ -959,7 +960,7 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Zero:
 		{
-			if (GetDigitLength(displayedNumber) >= 16) { break; }
+			if (GetDigitLength(displayedNumber) >= displayedNumberSize) { break; }
 
 			if (displayedNumber != 0)
 			{
@@ -972,8 +973,8 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_One:
 		{
-			if (GetDigitLength(displayedNumber) >= 16) { break; }
-			cout << "test1" << endl;
+			if (GetDigitLength(displayedNumber) >= displayedNumberSize) { break; }
+			
 			if (displayedNumber != 0)
 			{
 				updateDisplayedContent = true;
@@ -989,7 +990,7 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Two:
 		{
-			if (GetDigitLength(displayedNumber) >= 16) { break; }
+			if (GetDigitLength(displayedNumber) >= displayedNumberSize) { break; }
 
 			if (displayedNumber != 0)
 			{
@@ -1006,7 +1007,7 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Three:
 		{
-			if (GetDigitLength(displayedNumber) >= 16) { break; }
+			if (GetDigitLength(displayedNumber) >= displayedNumberSize) { break; }
 
 			if (displayedNumber != 0)
 			{
@@ -1023,7 +1024,7 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Four:
 		{
-			if (GetDigitLength(displayedNumber) >= 16) { break; }
+			if (GetDigitLength(displayedNumber) >= displayedNumberSize) { break; }
 
 			if (displayedNumber != 0)
 			{
@@ -1040,7 +1041,7 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Five:
 		{
-			if (GetDigitLength(displayedNumber) >= 16) { break; }
+			if (GetDigitLength(displayedNumber) >= displayedNumberSize) { break; }
 
 			if (displayedNumber != 0)
 			{
@@ -1057,7 +1058,7 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Six:
 		{
-			if (GetDigitLength(displayedNumber) >= 16) { break; }
+			if (GetDigitLength(displayedNumber) >= displayedNumberSize) { break; }
 
 			if (displayedNumber != 0)
 			{
@@ -1074,7 +1075,7 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Seven:
 		{
-			if (GetDigitLength(displayedNumber) >= 16) { break; }
+			if (GetDigitLength(displayedNumber) >= displayedNumberSize) { break; }
 
 			if (displayedNumber != 0)
 			{
@@ -1091,7 +1092,7 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Eight:
 		{
-			if (GetDigitLength(displayedNumber) >= 16) { break; }
+			if (GetDigitLength(displayedNumber) >= displayedNumberSize) { break; }
 
 			if (displayedNumber != 0)
 			{
@@ -1108,7 +1109,7 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Number_Nine:
 		{
-			if (GetDigitLength(displayedNumber) >= 16) { break; }
+			if (GetDigitLength(displayedNumber) >= displayedNumberSize) { break; }
 
 			if (displayedNumber != 0)
 			{

@@ -174,6 +174,7 @@ private:
 
 
 	static short commaPosition;
+	static short displayedNumberSize;
 	static __int64 displayedNumber;
 	static __int64 additionalNumber;
 	static __int64 currentResult;
