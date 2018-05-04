@@ -123,7 +123,8 @@ public:
 		Divison,
 		Multiplication,
 		Subtraction,
-		Addition
+		Addition,
+		None
 	};
 
 	// Event functions declaration
@@ -164,6 +165,7 @@ private:
 		
 	// Vaiables
 	static WNDPROC ApplicationWindowProc;
+	static CalculationOperator currentOperation;
 
 	static bool mouseButtonPressed;
 	static bool keyboardPressed;
@@ -171,6 +173,7 @@ private:
 	static bool keyboardInput;
 	static bool updateDisplayedContent;
 	static bool commaSet;
+	static bool currentResultSet;
 
 
 	static short commaPosition;

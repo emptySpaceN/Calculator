@@ -7,6 +7,7 @@
 
 // Variable initialization
 WNDPROC Events::ApplicationWindowProc = NULL;
+Events::CalculationOperator Events::currentOperation = Events::CalculationOperator::None;
 
 bool Events::mouseButtonPressed = false;
 bool Events::keyboardPressed = false;
@@ -14,6 +15,7 @@ bool Events::withinControl = false;
 bool Events::keyboardInput = false;
 bool Events::updateDisplayedContent = false;
 bool Events::commaSet = false;
+bool Events::currentResultSet = false;
 
 short Events::commaPosition = 0;
 short Events::displayedNumberSize = 16;
@@ -599,7 +601,6 @@ LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 
 			if (!keyboardPressed)
 			{
-				cout << "test 7" << endl;
 				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_NUMBER_SEVEN);
 			}
 		}
@@ -637,14 +638,34 @@ LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 			}
 		}
 		break;
-		case VK_OEM_MINUS:
+		case VK_OEM_MINUS:		// Left side of the keyboard
 		{
 			//TODO: Add numpad and kkeyboard minus
-			DisplayCharacter(EnteredCharacter::Character_PlusMinus);
+			DisplayCharacter(EnteredCharacter::Action_Subtraction);
 
 			if (!keyboardPressed)
 			{
-				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_PLUSMINUS);
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_SUBTRACTION);
+			}
+		}
+		break;
+		case VK_OEM_PLUS:		// Left side of the keyboard
+		{
+			DisplayCharacter(EnteredCharacter::Action_Addition);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_ADDITION);
+			}
+		}
+		break;
+		case VK_RETURN:			// Left side of the keyboard
+		{
+			DisplayCharacter(EnteredCharacter::Action_Result);
+
+			if (!keyboardPressed)
+			{
+				HandleButtonAction(InputAction::Keyboard, CONTROL_BUTTON_ACTION_RESULT);
 			}
 		}
 		break;
@@ -734,13 +755,13 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 	hDC = _passedControlStruct->hDC;
 	GetClientRect(_passedControlStruct->hwndItem, &rc);
 
-	if ((mouseButtonPressed && withinControl && !updateDisplayedContent && (_passedControlStruct->CtlID != ID_STATIC_NUMBER_FIELD)) || 
+	if ((mouseButtonPressed && withinControl && !updateDisplayedContent && (_passedControlStruct->CtlID != ID_STATIC_NUMBER_FIELD)) ||
 		(keyboardInput && !updateDisplayedContent && (_passedControlStruct->CtlID != ID_STATIC_NUMBER_FIELD)))
 	{
 
 		hBrush = CreateSolidBrush(RGB(5, 221, 221));
 
-		cout << _passedControlStruct->CtlID << endl;
+		//cout << _passedControlStruct->CtlID << endl;
 
 		if (keyboardPressed) { keyboardInput = false; }
 	}
@@ -772,20 +793,30 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 
 		// Convert __int64 to a wstring
 		wstringstream wss;
-		wss << displayedNumber;
+		
+		if (displayedNumber >= 0)
+		{
+			wss << displayedNumber;
+		}
+		else
+		{
+			wss << displayedNumber * -1;
+		}
+		
 
 		wstring bufferString = wss.str();//to_wstring(displayedNumber);
 		wstring newDisplayedContent = bufferString;
-		wcout << bufferString << endl;
+		//wcout << bufferString << endl;
 
 		if ((newDisplayedContent.length() / 3) > 0)
 		{
-			if ((newDisplayedContent.length() % 3) > 0 || newDisplayedContent.length() >= 6)
+			if (((newDisplayedContent.length() % 3) > 0) || (newDisplayedContent.length() >= 6))
 			{
 				try
 				{
-					int occurrences = newDisplayedContent.length();
-					for (int i = 1; i <= occurrences / 3; i++)
+					int originalLength = newDisplayedContent.length();
+
+					for (int i = 1; i <= originalLength / 3; i++)
 					{
 						if (newDisplayedContent.find(L".") == wstring::npos)
 						{
@@ -802,11 +833,16 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 						}
 					}
 				}
-				catch (const std::exception&)
+				catch (const std::exception &error)
 				{
 					// TODO: Add a function to log error in a file.
 				}
 			}
+		}
+
+		if (displayedNumber < 0)
+		{
+			newDisplayedContent = L"-" + newDisplayedContent;
 		}
 
 		GetTextExtentPoint32W(hDC, newDisplayedContent.c_str(), lstrlenW(newDisplayedContent.c_str()), &textSize);
@@ -815,8 +851,6 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 		textPositionY = ((rc.bottom - rc.top) / 2) - (textSize.cy / 2);
 
 		TextOutW(hDC, textPositionX, textPositionY, newDisplayedContent.c_str(), lstrlenW(newDisplayedContent.c_str()));
-
-
 
 		updateDisplayedContent = false;
 	}
@@ -854,7 +888,7 @@ std::wstring Events::GetClassNameToWstring(HWND _passedHandle)
 __int64 Events::ConcatenateInteger(__int64 _passedNumberOne, __int64 _passedNumberTwo)
 {
 	using namespace std;
-	cout << _passedNumberOne << " - " << _passedNumberTwo << endl;
+	//cout << _passedNumberOne << " - " << _passedNumberTwo << endl;
 	__int64 concatenatedNumber;
 	ostringstream oss;
 	istringstream iss;
@@ -877,11 +911,13 @@ __int64 Events::RemoveDigitFromInteger(__int64 _passedNumber)
 	ostringstream oss;
 	istringstream iss;
 
+	cout << _passedNumber << endl;
+
 	oss << _passedNumber;
 	iss.str(oss.str().substr(0, oss.str().length() - 1));
 	iss >> concatenatedNumber;
 
-	cout << concatenatedNumber << endl;
+
 
 	return concatenatedNumber;
 }
@@ -900,7 +936,7 @@ __int64 Events::GetDigitLength(__int64 _passedNumber)
 
 	while (digitHolder > 0) { digitHolder = digitHolder / 10; digitCounter += 1; }
 
-	cout << "digit counter " << test << endl;
+	//cout << "digit counter " << test << endl;
 
 	return test;
 }
@@ -916,8 +952,10 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		{
 			if (displayedNumber != 0)
 			{
+				//currentOperation = CalculationOperator::None;
 				updateDisplayedContent = true;
 				displayedNumber = 0;
+				currentResult = 0;
 
 				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 			}
@@ -925,10 +963,13 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Action_DeleteEverything:
 		{
+			system("cls");
 			// TODO: Delete all number and calculating variables
 			if (displayedNumber != 0)
 			{
+				currentOperation = CalculationOperator::None;
 				updateDisplayedContent = true;
+				currentResultSet = false;
 				displayedNumber = 0;
 				additionalNumber = 0;
 				currentResult = 0;
@@ -939,7 +980,7 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Action_DeleteCharacter:
 		{
-			if (displayedNumber >= 10)
+			if ((displayedNumber >= 10) || (displayedNumber < 0))
 			{
 				displayedNumber = RemoveDigitFromInteger(displayedNumber);
 			}
@@ -952,12 +993,6 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		break;
-		case EnteredCharacter::Action_Disision:
-		{
-
-
-		}
-		break;
 		case EnteredCharacter::Number_Zero:
 		{
 			if (GetDigitLength(displayedNumber) >= displayedNumberSize) { break; }
@@ -967,6 +1002,15 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 				updateDisplayedContent = true;
 				displayedNumber = ConcatenateInteger(displayedNumber, 0);
 
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
+
 				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 			}
 		}
@@ -974,15 +1018,33 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		case EnteredCharacter::Number_One:
 		{
 			if (GetDigitLength(displayedNumber) >= displayedNumberSize) { break; }
-			
+
 			if (displayedNumber != 0)
 			{
 				updateDisplayedContent = true;
 				displayedNumber = ConcatenateInteger(displayedNumber, 1);
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 			else
 			{
 				displayedNumber = 1;
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 
 			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
@@ -996,10 +1058,28 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 			{
 				updateDisplayedContent = true;
 				displayedNumber = ConcatenateInteger(displayedNumber, 2);
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 			else
 			{
 				displayedNumber = 2;
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 
 			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
@@ -1013,10 +1093,28 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 			{
 				updateDisplayedContent = true;
 				displayedNumber = ConcatenateInteger(displayedNumber, 3);
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 			else
 			{
 				displayedNumber = 3;
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 
 			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
@@ -1030,10 +1128,28 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 			{
 				updateDisplayedContent = true;
 				displayedNumber = ConcatenateInteger(displayedNumber, 4);
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 			else
 			{
 				displayedNumber = 4;
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 
 			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
@@ -1047,10 +1163,28 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 			{
 				updateDisplayedContent = true;
 				displayedNumber = ConcatenateInteger(displayedNumber, 5);
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 			else
 			{
 				displayedNumber = 5;
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 
 			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
@@ -1064,10 +1198,28 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 			{
 				updateDisplayedContent = true;
 				displayedNumber = ConcatenateInteger(displayedNumber, 6);
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 			else
 			{
 				displayedNumber = 6;
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 
 			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
@@ -1081,10 +1233,28 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 			{
 				updateDisplayedContent = true;
 				displayedNumber = ConcatenateInteger(displayedNumber, 7);
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 			else
 			{
 				displayedNumber = 7;
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 
 			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
@@ -1098,10 +1268,28 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 			{
 				updateDisplayedContent = true;
 				displayedNumber = ConcatenateInteger(displayedNumber, 8);
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 			else
 			{
 				displayedNumber = 8;
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 
 			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
@@ -1115,10 +1303,28 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 			{
 				updateDisplayedContent = true;
 				displayedNumber = ConcatenateInteger(displayedNumber, 9);
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 			else
 			{
 				displayedNumber = 9;
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
 			}
 
 			RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
@@ -1126,33 +1332,65 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 		break;
 		case EnteredCharacter::Character_PlusMinus:
 		{
+			if (displayedNumber != 0)
+			{
+				displayedNumber *= -1;
+
+				if (!currentResultSet)
+				{
+					currentResult = displayedNumber;
+				}
+				else
+				{
+					additionalNumber = displayedNumber;
+				}
+
+				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+			}
 		}
 		break;
 		case EnteredCharacter::Character_Comma:
 		{
 			if (!commaSet)
 			{
-				
-
-
-
-
 				commaSet = true;
 				commaPosition = 1;
 				RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 			}
 		}
 		break;
+		case EnteredCharacter::Action_Disision:
+		{
+			currentOperation = CalculationOperator::Divison;
+			currentResultSet = true;
+			displayedNumber = 0;
+		}
+		break;
 		case EnteredCharacter::Action_Addition:
 		{
+			currentOperation = CalculationOperator::Addition;
+			currentResultSet = true;
+			displayedNumber = 0;
 		}
 		break;
 		case EnteredCharacter::Action_Subtraction:
 		{
+			currentOperation = CalculationOperator::Subtraction;
+			currentResultSet = true;
+			displayedNumber = 0;
 		}
 		break;
 		case EnteredCharacter::Action_Multiplication:
 		{
+			currentOperation = CalculationOperator::Multiplication;
+			currentResultSet = true;
+			displayedNumber = 0;
+		}
+		break;
+		case EnteredCharacter::Action_Result:
+		{
+			//additionalNumber = displayedNumber;
+			CalculateResult(currentResult, additionalNumber, currentOperation);
 		}
 		break;
 		default:
@@ -1169,7 +1407,6 @@ void Events::HandleButtonAction(InputAction _passedAction, HWND _passedNewCurren
 	{
 		case Events::Mouse:
 		{
-
 			RedrawWindow(HANDLE_CURRENTCONTROL, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		break;
@@ -1194,30 +1431,32 @@ void Events::HandleButtonAction(InputAction _passedAction, HWND _passedNewCurren
 
 void Events::CalculateResult(__int64 _passedCurrentResult, __int64 _passedAdditionNumber, CalculationOperator _passedOperator)
 {
+	using namespace std;
+
 	switch (_passedOperator)
 	{
 		case Events::Divison:
 		{
 			currentResult = _passedCurrentResult / _passedAdditionNumber;
-
-			displayedNumber = currentResult;
-
-			DisplayCharacter(EnteredCharacter::Action_Result);
+			cout << _passedCurrentResult << " / " << _passedAdditionNumber << " = " << currentResult << endl;
 		}
 		break;
 		case Events::Multiplication:
 		{
-
+			currentResult = _passedCurrentResult * _passedAdditionNumber;
+			cout << _passedCurrentResult << " * " << _passedAdditionNumber << " = " << currentResult << endl;
 		}
 		break;
 		case Events::Subtraction:
 		{
-
+			currentResult = _passedCurrentResult - _passedAdditionNumber;
+			cout << _passedCurrentResult << " - " << _passedAdditionNumber << " = " << currentResult << endl;
 		}
 		break;
 		case Events::Addition:
 		{
-
+			currentResult = _passedCurrentResult + _passedAdditionNumber;
+			cout << _passedCurrentResult << " + " << _passedAdditionNumber << " = " << currentResult << endl;
 		}
 		break;
 		default:
@@ -1225,6 +1464,10 @@ void Events::CalculateResult(__int64 _passedCurrentResult, __int64 _passedAdditi
 		}
 		break;
 	}
+
+	currentResultSet = false;
+	displayedNumber = currentResult;
+	RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 }
 
 
