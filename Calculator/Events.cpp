@@ -72,17 +72,17 @@ HWND Events::CONTROL_BUTTON_ACTION_RESULT = NULL;
 
 // -------- UpDown handles --------
 
-
+#pragma region Constructor & Destructor
 Events::Events()
 {
 }
 
-
 Events::~Events()
 {
 }
+#pragma endregion
 
-
+#pragma region Message loop events
 LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 {
 	int buttonWidth = 60;
@@ -283,7 +283,6 @@ LRESULT Events::MainWindowProc_OnCreate(lpWndEventArgs Wea)
 	return 0;
 }
 
-
 LRESULT Events::MainWindowProc_OnPaint(lpWndEventArgs Wea)
 {
 	// Font-test
@@ -312,7 +311,6 @@ LRESULT Events::MainWindowProc_OnPaint(lpWndEventArgs Wea)
 	return 0;
 }
 
-
 LRESULT Events::MainWindowProc_OnClose(lpWndEventArgs Wea)
 {
 	DestroyWindow(Wea->hWnd);
@@ -321,16 +319,11 @@ LRESULT Events::MainWindowProc_OnClose(lpWndEventArgs Wea)
 	return 0;
 }
 
-
-
-
-
 LRESULT Events::MainWindowProc_GetWindowHandle(lpWndEventArgs Wea)
 {
 	HANDLE_MAINWINDOW = Wea->hWnd;
 	return 0;
 }
-
 
 LRESULT Events::MainWindowProc_OnDawControl(lpWndEventArgs Wea)
 {
@@ -455,7 +448,6 @@ LRESULT Events::MainWindowProc_OnDawControl(lpWndEventArgs Wea)
 	return 0;
 }
 
-
 LRESULT Events::MainWindowProc_OnMouseMove(lpWndEventArgs Wea)
 {
 	using namespace std;
@@ -485,7 +477,6 @@ LRESULT Events::MainWindowProc_OnMouseMove(lpWndEventArgs Wea)
 
 	return 0;
 }
-
 
 LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 {
@@ -678,7 +669,6 @@ LRESULT Events::MainWindowProc_OnKeyDown(lpWndEventArgs Wea)
 	return 0;
 }
 
-
 LRESULT Events::MainWindowProc_OnKeyUp(lpWndEventArgs Wea)
 {
 	using namespace std;
@@ -688,6 +678,7 @@ LRESULT Events::MainWindowProc_OnKeyUp(lpWndEventArgs Wea)
 
 	return 0;
 }
+#pragma endregion
 
 
 LRESULT CALLBACK Events::GlobalKeyboardHook(int nCode, WPARAM wParam, LPARAM lParam)
@@ -695,12 +686,10 @@ LRESULT CALLBACK Events::GlobalKeyboardHook(int nCode, WPARAM wParam, LPARAM lPa
 	return 0;
 }
 
-
 LRESULT CALLBACK Events::GlobalMouseHook(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	return 0;
 }
-
 
 void Events::GetWindowPos(HWND hWnd, int *x, int *y)
 {
@@ -712,7 +701,6 @@ void Events::GetWindowPos(HWND hWnd, int *x, int *y)
 	(*x) = p.x;
 	(*y) = p.y;
 }
-
 
 INT_PTR Events::PaintButtonBackground(LPARAM _passedlParam, WPARAM _passedwParam)
 {
@@ -726,7 +714,6 @@ INT_PTR Events::PaintButtonBackground(LPARAM _passedlParam, WPARAM _passedwParam
 
 	return (INT_PTR)brush;
 }
-
 
 void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstring _controlText)
 {
@@ -858,7 +845,6 @@ void Events::HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstri
 	DeleteObject(SelectObject(hDC, hTmp));
 }
 
-
 std::wstring Events::GetWindowTextToWstring(HWND _passedHandle)
 {
 	int lngth = GetWindowTextLengthW(_passedHandle) + 1;
@@ -867,7 +853,6 @@ std::wstring Events::GetWindowTextToWstring(HWND _passedHandle)
 	std::wstring stxt = &buf[0];
 	return stxt;
 }
-
 
 std::wstring Events::GetClassNameToWstring(HWND _passedHandle)
 {
@@ -902,7 +887,6 @@ __int64 Events::ConcatenateInteger(__int64 _passedNumberOne, __int64 _passedNumb
 	return concatenatedNumber;
 }
 
-
 __int64 Events::RemoveDigitFromInteger(__int64 _passedNumber)
 {
 	using namespace std;
@@ -922,7 +906,6 @@ __int64 Events::RemoveDigitFromInteger(__int64 _passedNumber)
 	return concatenatedNumber;
 }
 
-
 __int64 Events::GetDigitLength(__int64 _passedNumber)
 {
 	using namespace std;
@@ -940,7 +923,6 @@ __int64 Events::GetDigitLength(__int64 _passedNumber)
 
 	return test;
 }
-
 
 void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 {
@@ -1400,7 +1382,6 @@ void Events::DisplayCharacter(EnteredCharacter _passedCharacter)
 	}
 }
 
-
 void Events::HandleButtonAction(InputAction _passedAction, HWND _passedNewCurrentControl = NULL)
 {
 	switch (_passedAction)
@@ -1427,7 +1408,6 @@ void Events::HandleButtonAction(InputAction _passedAction, HWND _passedNewCurren
 		break;
 	}
 }
-
 
 void Events::CalculateResult(__int64 _passedCurrentResult, __int64 _passedAdditionNumber, CalculationOperator _passedOperator)
 {
@@ -1469,7 +1449,6 @@ void Events::CalculateResult(__int64 _passedCurrentResult, __int64 _passedAdditi
 	displayedNumber = currentResult;
 	RedrawWindow(CONTROL_STATIC_NUMBER_FIELD, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 }
-
 
 DWORD WINAPI Events::ResetButtonState(__in LPVOID lpParameter)
 {
@@ -1514,7 +1493,6 @@ DWORD WINAPI Events::ResetButtonState(__in LPVOID lpParameter)
 
 	return 0;
 }
-
 
 LRESULT CALLBACK Events::CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {

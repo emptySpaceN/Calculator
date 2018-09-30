@@ -16,13 +16,10 @@
 #define VK_KEY_8								0x38
 #define VK_KEY_9								0x39
 
-
 // -------- Edit IDs --------
-
 
 // -------- Static IDs --------
 #define ID_STATIC_NUMBER_FIELD					1201
-
 
 // -------- Button IDs --------
 #define ID_BUTTON_ACTION_DELETEDISPLAYED		1301
@@ -50,15 +47,11 @@
 #define ID_BUTTON_CHARACTER_COMMA				1319
 #define ID_BUTTON_ACTION_RESULT					1320
 
-
 // -------- ComboBox IDs --------
-
 
 // -------- CheckBox IDs --------
 
-
 // -------- UpDown handles --------
-
 
 // Custom messages
 #define WM_GETWINDOWHANDLE (WM_USER + 1) //RegisterWindowMessageW(L"WindowMessage_GetMainWindowHandle")
@@ -79,8 +72,6 @@ public:
 		LPARAM           lParam;
 		HINSTANCE        hIns;
 	}WndEventArgs, *lpWndEventArgs;
-
-
 
 	struct EVENTHANDLER
 	{
@@ -145,7 +136,6 @@ public:
 	static INT_PTR					PaintButtonBackground(LPARAM _passedlParam, WPARAM _passedwParam);
 	static void						HandleItemDrawing(LPDRAWITEMSTRUCT _passedControlStruct, std::wstring _controlText);
 
-	
 private:
 #pragma region Variables:
 	// Function declarations
@@ -162,7 +152,6 @@ private:
 	static DWORD WINAPI				ResetButtonState(__in LPVOID lpParameter);
 	static LRESULT CALLBACK			CustomControlsWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-		
 	// Vaiables
 	static WNDPROC ApplicationWindowProc;
 	static CalculationOperator currentOperation;
@@ -175,25 +164,20 @@ private:
 	static bool commaSet;
 	static bool currentResultSet;
 
-
 	static short commaPosition;
 	static short displayedNumberSize;
 	static __int64 displayedNumber;
 	static __int64 additionalNumber;
 	static __int64 currentResult;
 
-
 	// -------- Miscellaneous handles --------
 	static HWND HANDLE_MAINWINDOW;
 	static HWND HANDLE_CURRENTCONTROL;
 
-
 	// -------- Edit handles --------
-
 
 	// -------- Static handles --------
 	static HWND CONTROL_STATIC_NUMBER_FIELD;
-
 
 	// -------- Button handles --------
 	static HWND CONTROL_BUTTON_ACTION_DELETEDISPLAYED;
@@ -221,15 +205,11 @@ private:
 	static HWND CONTROL_BUTTON_CHARACTER_COMMA;
 	static HWND CONTROL_BUTTON_ACTION_RESULT;
 
-
 	// -------- ComboBox handles --------
 	
-
 	// -------- CheckBox handles --------
 
-
 	// -------- UpDown handles --------
-
 
 #pragma endregion
 };
